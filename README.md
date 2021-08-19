@@ -12,3 +12,6 @@ All mentioned things are placed relative to 'Assets' folder
 - [Orbox](https://bitbucket.org/orbox/orbox/src/master/ "Orbox/master") contains useful programming tools like ResourceManager, SoundManager, Promises
 - [PathCreator](https://assetstore.unity.com/packages/tools/utilities/b-zier-path-creator-136082 "AssetStore - Bézier Path Creator") allows quick creating of smooth paths in the editor
 - [TextMesh Pro](http://digitalnativestudios.com/textmeshpro/docs/ "Documentation") - no comments)
+
+### Data
+- **Textures** - contains Dissolve, Distortion, Gradient and Noise texture samples
