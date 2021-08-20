@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Orbox.Async;
 using UnityEngine;
@@ -6,7 +7,7 @@ using UnityEngine;
 namespace Orbox.Utils
 {
     //orbox: TODO: there is a possibility to increase performance here. 
-    public class Timers : MonoBehaviour , ITimers
+    public class Timers : MonoBehaviour, ITimers
     {       
         private List<Timer> FreeTimers = new List<Timer>();
         private List<Timer> UsedTimers = new List<Timer>();
@@ -23,6 +24,20 @@ namespace Orbox.Utils
         {
             var timer = Obtain(seconds);
             return timer.Promise();
+        }
+
+        public IPromise WaitForCondition(Func<bool> condition)
+        {
+            IEnumerator WaitForConditionEnumerator(Func<bool> cond, Deferred deferred)
+            {
+                yield return new WaitUntil(cond);
+                deferred.Resolve();
+            }
+
+            var promise = new Deferred();
+            StartCoroutine(WaitForConditionEnumerator(condition, promise));
+
+            return promise;
         }
 
         // --- private ---
