@@ -7,16 +7,63 @@ using UnityEngine;
 
 namespace Core
 {
-    public class TimerService : MonoBehaviour
+    public interface ITimerService
     {
+        void SubscribeForUpdate(Action action);
+        void SubscribeForHalfSecond(Action action);
+
+        IPromise Wait(float seconds);
+        IPromise WaitForCondition(Func<bool> condition);
+    }
+
+    public class TimerService : MonoBehaviour, ITimerService
+    {
+        private readonly List<Action> UpdateSubscribers = new List<Action>();
+        private readonly List<Action> HalfSecondSubscribers = new List<Action>();
+
+        private readonly WaitForSeconds HalfSecondWaiter = new WaitForSeconds(0.5f);
+
         private ITimers Timers;
 
         private void Awake()
         {
             Timers = MonoExtensions.MakeComponent<Timers>(transform);
+            StartCoroutine(HalfSecondCoroutine());
+        }
+
+        private void Update()
+        {
+            foreach (var sub in UpdateSubscribers)
+                sub.Invoke();
+        }
+
+        private IEnumerator HalfSecondCoroutine()
+        {
+            while (true)
+            {
+                foreach (var sub in HalfSecondSubscribers)
+                    sub.Invoke();
+
+                yield return HalfSecondWaiter;
+            }
         }
 
         #region Public methods
+        public void SubscribeForUpdate(Action action)
+        {
+            UpdateSubscribers.Add(action);
+        }
+
+        public void SubscribeForHalfSecond(Action action)
+        {
+            HalfSecondSubscribers.Add(action);
+        }
+
+        public IPromise Wait(float seconds)
+        {
+            return Timers.Wait(seconds);
+        }
+
         public IPromise WaitForCondition(Func<bool> condition)
         {
             IEnumerator WaitForConditionEnumerator(Func<bool> cond, Deferred deferred)
@@ -29,11 +76,6 @@ namespace Core
             StartCoroutine(WaitForConditionEnumerator(condition, promise));
 
             return promise;
-        }
-
-        public IPromise Wait(float seconds)
-        {
-            return Timers.Wait(seconds);
         }
         #endregion
     }

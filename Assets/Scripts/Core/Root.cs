@@ -7,7 +7,7 @@ namespace Core
 {
 	public class Root : MonoBehaviour
 	{
-		public static TimerService TimerService { get; private set; }
+		public static ITimerService TimerService { get; private set; }
 
 		private static Transform RootTransform;
 
