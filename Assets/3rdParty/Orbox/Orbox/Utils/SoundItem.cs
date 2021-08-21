@@ -22,7 +22,7 @@ namespace Orbox.Utils
             private readonly float OriginalPitch;
             private readonly float OriginalVolume;
 
-            private Deferred DeferredComplete;
+            private Promise DeferredComplete;
 
             public SoundItem(Type enumType, int enumValue, AudioSource source, bool external)
             {
@@ -46,7 +46,7 @@ namespace Orbox.Utils
 
             public IPromise PlayAndNotify()
             {
-                DeferredComplete = new Deferred();
+                DeferredComplete = new Promise();
                 Source.Play();
 
                 return DeferredComplete;

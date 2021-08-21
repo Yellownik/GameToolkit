@@ -8,7 +8,7 @@ namespace Utils
 	{
 		public static IPromise WaitForAnimationEnd(Animator animator, int stateHash)
 		{
-			var promise = new Deferred();
+			var promise = new Promise();
 			Root.TimerService.WaitForCondition(() => animator == null || animator.GetCurrentAnimatorStateInfo(0).shortNameHash == stateHash)
 				.Done(() =>
 				{

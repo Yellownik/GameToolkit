@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Orbox.Async
 {
-    public class Deferred : BaseDeferred, IPromise
+    public class Promise : BaseDeferred, IPromise
     {
 
         public new IPromise Resolve()
@@ -13,7 +13,7 @@ namespace Orbox.Async
 
         public static IPromise All(params IPromise[] collection)
         {
-            var deferred = new Deferred();
+            var deferred = new Promise();
             var promises = Array.ConvertAll(collection, promice => promice as BaseDeferred);
            
             if (collection.Length == 0)
@@ -42,7 +42,7 @@ namespace Orbox.Async
         //First will be Resolved, others well be Reseted
         public static IPromise Race(params IPromise[] collection)
         {
-            var race = new Deferred();
+            var race = new Promise();
             var promises = Array.ConvertAll(collection, promice => promice as BaseDeferred);
 
             BaseDeferred last = null;
@@ -95,13 +95,13 @@ namespace Orbox.Async
 
     }
    
-    public class Deferred<T> : BaseDeferred ,  IPromise<T>
+    public class Promise<T> : BaseDeferred ,  IPromise<T>
     {
         protected T Result;
 
         IPromise<T> IPromise<T>.Clone()
         {
-            var clone = new Deferred<T>();
+            var clone = new Promise<T>();
 
             AssignDisposer(clone, Disposer);
 
@@ -146,7 +146,7 @@ namespace Orbox.Async
 
         public IPromise Then(Func<T, IPromise> next)
         {
-            var deferred = new Deferred();
+            var deferred = new Promise();
 
             AssignDisposer(deferred, Disposer);
 
@@ -168,7 +168,7 @@ namespace Orbox.Async
 
         public IPromise<TNext> Then<TNext>(Func<T,IPromise<TNext>> next)
         {
-            var deferred = new Deferred<TNext>();
+            var deferred = new Promise<TNext>();
 
             AssignDisposer(deferred, Disposer);
 
@@ -190,7 +190,7 @@ namespace Orbox.Async
 
         public IPromise<T> Catch(Predicate<RejectReason> condition, Func<RejectReason, IPromise<T>> next)
         {
-            var deferred = new Deferred<T>();
+            var deferred = new Promise<T>();
             
             AssignDisposer(deferred, Disposer);
 

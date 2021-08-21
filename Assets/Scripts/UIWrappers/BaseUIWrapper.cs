@@ -11,7 +11,7 @@ namespace UIWrappers
 
         protected IPromise BaseScale(bool isShow)
         {
-            var promise = new Deferred();
+            var promise = new Promise();
 
             transform.DoScale(isShow)
                 .onComplete += () => promise.Resolve();

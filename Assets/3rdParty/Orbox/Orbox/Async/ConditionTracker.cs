@@ -12,7 +12,7 @@ namespace Orbox.Async
 
         public IPromise Track(Func<bool> condition)
         {
-            var deferred = new Deferred();
+            var deferred = new Promise();
             var item = new TrackedItem(deferred, condition);
 
             Items.Add(item);
@@ -49,10 +49,10 @@ namespace Orbox.Async
 
         private class TrackedItem
         {
-            public readonly Deferred Deferred;
+            public readonly Promise Deferred;
             public readonly Func<bool> Condition;
 
-            public TrackedItem(Deferred deferred, Func<bool> condition)
+            public TrackedItem(Promise deferred, Func<bool> condition)
             {
                 Deferred = deferred;
                 Condition = condition;

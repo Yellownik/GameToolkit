@@ -36,7 +36,7 @@ namespace Orbox.Utils
             // return already resolved promise when transition is absent
             if(Transitions.ContainsKey(key) == false)
             {
-                return new Deferred().Resolve();
+                return new Promise().Resolve();
             }
 
 

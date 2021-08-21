@@ -33,7 +33,7 @@ namespace Orbox.Utils
             private float ElapsedTime;
 
             private Timers Owner;
-            private Deferred Deferred = new Deferred();
+            private Promise Deferred = new Promise();
 
             private int InitializeFrameCount = 0;
 
@@ -70,7 +70,7 @@ namespace Orbox.Utils
                     }
                     finally
                     {
-                        Deferred = new Deferred(); //orbox: TODO: Use Deferred Pool
+                        Deferred = new Promise(); //orbox: TODO: Use Deferred Pool
                         Owner.Release(this);
                     }
                 }

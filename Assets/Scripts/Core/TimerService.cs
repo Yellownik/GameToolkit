@@ -66,13 +66,13 @@ namespace Core
 
         public IPromise WaitForCondition(Func<bool> condition)
         {
-            IEnumerator WaitForConditionEnumerator(Func<bool> cond, Deferred deferred)
+            IEnumerator WaitForConditionEnumerator(Func<bool> cond, Promise deferred)
             {
                 yield return new WaitUntil(cond);
                 deferred.Resolve();
             }
 
-            var promise = new Deferred();
+            var promise = new Promise();
             StartCoroutine(WaitForConditionEnumerator(condition, promise));
 
             return promise;
