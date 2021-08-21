@@ -10,13 +10,20 @@ public class ChangeStateElementInspector : Editor
     public override void OnInspectorGUI()
     {
         element = target as ChangeStateElement;
-        EditorGUI.BeginChangeCheck();
 
-        var data = element.StateData;
-        data = DrawDataFields(data);
+        for (int i = 0; i < element.dataList.Count; i++)
+        {
+            GUILayout.Space(10);
+            EditorGUI.BeginChangeCheck();
 
-        if (EditorGUI.EndChangeCheck())
-            element.StateData = data;
+            var data = element.dataList[i];
+            data = DrawDataFields(data);
+
+            if (EditorGUI.EndChangeCheck())
+                element.dataList[i] = data;
+
+        }
+        DrawAddRemoveButtons(element);
     }
 
     protected ChangeStateElement.Data DrawDataFields(ChangeStateElement.Data data)
@@ -55,6 +62,24 @@ public class ChangeStateElementInspector : Editor
         }
 
         return data;
+    }
+
+    private void DrawAddRemoveButtons(ChangeStateElement element)
+    {
+        GUILayout.Space(10);
+        GUILayout.BeginHorizontal();
+        {
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("Add", GUILayout.Width(60)))
+                element.CreateData_Editor();
+
+            GUILayout.Space(30);
+            if (element.dataList.Count > 0 && GUILayout.Button("Remove", GUILayout.Width(60)))
+                element.RemoveData_Editor();
+
+            GUILayout.FlexibleSpace();
+        }
+        GUILayout.EndHorizontal();
     }
 }
 

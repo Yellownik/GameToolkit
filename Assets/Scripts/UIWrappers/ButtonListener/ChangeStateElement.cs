@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -48,8 +49,8 @@ namespace ButtonListeners
         public Image ImageTarget { get; private set; }
         public TextMeshProUGUI TextTarget { get; private set; }
 
-        public Data StateData = new Data();
-        private Data Normal { get; set; }
+        public List<Data> dataList = new List<Data>() { new Data() };
+        private Data Normal;
 
         private bool IsInited = false;
 
@@ -79,18 +80,24 @@ namespace ButtonListeners
             IsInited = true;
         }
 
-        public void ReceiveEvent(ChangeStateEvent stateEvent, bool state)
+        public void RevertToDefault()
         {
-            if (Normal.EventToReceive == stateEvent)
-            {
-                if (!IsInited)
-                    InitOnChanged();
+            ChangeStateByEvent(Normal, false);
+        }
 
-                ChangeStateByEvent(Normal, state);
+        public virtual void ReceiveEvent(ChangeStateEvent stateEvent, bool state)
+        {
+            if (!IsInited)
+                InitOnChanged();
+
+            for (int i = 0; i < dataList.Count; i++)
+            {
+                if (dataList[i].EventToReceive == stateEvent)
+                    ChangeStateByEvent(dataList[i], state);
             }
         }
 
-        public void ChangeStateByEvent(Data data, bool state)
+        protected void ChangeStateByEvent(Data data, bool state)
         {
             switch (data.ChangeStateType)
             {
@@ -134,9 +141,17 @@ namespace ButtonListeners
             }
         }
 
-        public void RevertToDefault()
+#if UNITY_EDITOR
+        public void CreateData_Editor()
         {
-            ChangeStateByEvent(Normal, false);
+            dataList.Add(new Data());
         }
-    }
+
+        public void RemoveData_Editor()
+        {
+            if (dataList.Count > 0)
+                dataList.Remove(dataList[dataList.Count - 1]);
+        }
+#endif
+	}
 }
