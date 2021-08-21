@@ -7,8 +7,11 @@ namespace ButtonListeners
 	[ExecuteInEditMode]
 	public class ChangeStateGroup : MonoBehaviour
 	{
-		[SerializeField]
-		private List<ChangeStateElement> StateElements;
+		[SerializeField] private List<ChangeStateElement> StateElements;
+
+		[Space]
+		[SerializeField] private ChangeStateEvent ChangeStateEvent;
+		[SerializeField] private bool IsStateActive = true;
 
 		public bool SelectedState { get; private set; }
 		public bool LockedState { get; private set; }
@@ -27,22 +30,15 @@ namespace ButtonListeners
 		
 		private void BroadcastEvent(ChangeStateEvent evType, bool state)
 		{
-			foreach (ChangeStateElement elementItem in StateElements)
-			{
+			foreach (var elementItem in StateElements)
 				elementItem.ReceiveEvent(evType, state);
-			}
 		}
 
 		[Button]
-		public void ChangeLockState()
+		private void BroadcastEvent_Editor()
 		{
-			SetLocked(!LockedState);
-		}
-
-		[Button]
-		public void ChangeSelectedState()
-		{
-			SetSelected(!SelectedState);
+			BroadcastEvent(ChangeStateEvent, IsStateActive);
+			IsStateActive = !IsStateActive;
 		}
 
 		[Button]
