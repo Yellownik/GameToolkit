@@ -9,14 +9,14 @@ namespace Utils
 		public static IPromise WaitForAnimationEnd(Animator animator, int stateHash)
 		{
 			var promise = new Deferred();
-			Root.Timers.WaitForCondition(() => animator == null || animator.GetCurrentAnimatorStateInfo(0).shortNameHash == stateHash)
+			Root.TimerService.WaitForCondition(() => animator == null || animator.GetCurrentAnimatorStateInfo(0).shortNameHash == stateHash)
 				.Done(() =>
 				{
 					if (animator == null)
 						return;
 
 					float waitTime = animator.GetCurrentAnimatorStateInfo(0).length;
-					Root.Timers.Wait(waitTime)
+					Root.TimerService.Wait(waitTime)
 						.Done(() => promise.Resolve());
 				});
 			return promise;

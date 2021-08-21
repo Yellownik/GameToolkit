@@ -7,7 +7,7 @@ namespace Core
 {
 	public class Root : MonoBehaviour
 	{
-		public static ITimers Timers { get; private set; }
+		public static TimerService TimerService { get; private set; }
 
 		private static Transform RootTransform;
 
@@ -20,7 +20,7 @@ namespace Core
 
 		private void Init()
 		{
-			Timers = MonoExtensions.MakeComponent<Timers>(RootTransform);
+			TimerService = MonoExtensions.MakeComponent<TimerService>(RootTransform);
 		}
 	}
 }

@@ -26,20 +26,6 @@ namespace Orbox.Utils
             return timer.Promise();
         }
 
-        public IPromise WaitForCondition(Func<bool> condition)
-        {
-            IEnumerator WaitForConditionEnumerator(Func<bool> cond, Deferred deferred)
-            {
-                yield return new WaitUntil(cond);
-                deferred.Resolve();
-            }
-
-            var promise = new Deferred();
-            StartCoroutine(WaitForConditionEnumerator(condition, promise));
-
-            return promise;
-        }
-
         // --- private ---
         private class Timer
         {
