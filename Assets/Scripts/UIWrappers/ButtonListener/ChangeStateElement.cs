@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -41,7 +42,7 @@ namespace ButtonListeners
             public Sprite Sprite;
 
             public bool IsActive;
-            public float DurationAnim;
+            public float Duration;
         }
        
         [SerializeField] private bool IsAllowInitOnAwake = true;
@@ -101,43 +102,64 @@ namespace ButtonListeners
         {
             switch (data.ChangeStateType)
             {
-                case ChangeStateType.Color:
-                    if (ImageTarget != null)
-                        ImageTarget.color = state ? data.Color : Normal.Color;
+                case ChangeStateType.LocalScale:
+                    var resScale = Normal.Scale;
+                    if (state)
+                        resScale.Scale(data.Scale);
 
-                    if (TextTarget != null)
-                        TextTarget.color = state ? data.Color : Normal.Color;
-                    break;
-
-                case ChangeStateType.ColorTint:
-                    if (ImageTarget != null)
-                        ImageTarget.color = state ? Normal.Color * data.ColorTint : Normal.Color;
-
-                    if (TextTarget != null)
-                        TextTarget.color = state ? Normal.Color * data.ColorTint : Normal.Color;
+                    if (data.Duration > 0)
+                        transform.DOScale(resScale, data.Duration);
+                    else
+                        transform.localScale = resScale;
                     break;
 
                 case ChangeStateType.LocalPosition:
-                    transform.localPosition = state ? Normal.Position + data.Position : Normal.Position;
+                    var resPos = state ? Normal.Position + data.Position : Normal.Position;
+
+                    if (data.Duration > 0)
+                        transform.DOLocalMove(resPos, data.Duration);
+                    else
+                        transform.localPosition = resPos;
                     break;
 
-                case ChangeStateType.LocalScale:
-                    Vector3 resScale = Normal.Scale;
-                    if (state) 
-                        resScale.Scale(data.Scale);
-
-                    transform.localScale = resScale;
+                case ChangeStateType.ColorTint:
+                    var resTintColor = state ? Normal.Color * data.ColorTint : Normal.Color;
+                    ChangeColor(resTintColor, data.Duration);
                     break;
 
-                case ChangeStateType.OnOff:
-                    var active = state ? data.IsActive : Normal.IsActive;
-                    gameObject.SetActive(active);
+                case ChangeStateType.Color:
+                    var resColor = state ? data.Color : Normal.Color;
+                    ChangeColor(resColor, data.Duration);
                     break;
 
                 case ChangeStateType.Sprite:
                     if (ImageTarget != null)
                         ImageTarget.sprite = state ? data.Sprite : Normal.Sprite;
                     break;
+
+                case ChangeStateType.OnOff:
+                    var active = state ? data.IsActive : Normal.IsActive;
+                    gameObject.SetActive(active);
+                    break;
+            }
+        }
+
+        private void ChangeColor(Color color, float duration)
+        {
+            if (ImageTarget != null)
+            {
+                if (duration > 0)
+                    ImageTarget.DOColor(color, duration);
+                else
+                    ImageTarget.color = color;
+            }
+
+            if (TextTarget != null)
+            {
+                if (duration > 0)
+                    TextTarget.DOColor(color, duration);
+                else
+                    TextTarget.color = color;
             }
         }
 

@@ -40,17 +40,20 @@ public class ChangeStateElementInspector : Editor
         {
             case ChangeStateType.LocalScale:
                 data.Scale = EditorGUILayout.Vector3Field("ScaleMult", data.Scale);
-                data.DurationAnim = EditorGUILayout.FloatField("Tween time: ", data.DurationAnim);
+                data.Duration = EditorGUILayout.FloatField("Tween time: ", data.Duration);
                 break;
             case ChangeStateType.LocalPosition:
                 data.Position = EditorGUILayout.Vector3Field("Position Shift", data.Position);
+                data.Duration = EditorGUILayout.FloatField("Tween time: ", data.Duration);
                 break;
 
             case ChangeStateType.ColorTint:
                 data.ColorTint = EditorGUILayout.FloatField("Color Tint: ", data.ColorTint);
+                data.Duration = EditorGUILayout.FloatField("Tween time: ", data.Duration);
                 break;
             case ChangeStateType.Color:
                 data.Color = EditorGUILayout.ColorField("Color", data.Color);
+                data.Duration = EditorGUILayout.FloatField("Tween time: ", data.Duration);
                 break;
             case ChangeStateType.Sprite:
                 data.Sprite = (Sprite)EditorGUILayout.ObjectField("Sprite", data.Sprite, typeof(Sprite), false);
