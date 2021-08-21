@@ -4,116 +4,139 @@ using UnityEngine.UI;
 
 namespace ButtonListeners
 {
+    public enum ChangeStateEvent
+    {
+        ButtonPressed,
+        MouseOver,
+
+        ElementSelected,
+        ElementLocked,
+    }
+
     public enum ChangeStateType
     {
-        Color,
-        ColorTint,
-        LocalPosition,
         LocalScale,
-        Image,
+        LocalPosition,
+        ColorTint,
+        Color,
+        Sprite,
         OnOff,
     }
 
     [ExecuteAlways]
     public class ChangeStateElement : MonoBehaviour
     {
-        public ChangeStateEvent EventToReceive = ChangeStateEvent.ButtonPressed;
-        public ChangeStateType ChangeStateType = ChangeStateType.LocalScale;
+        [System.Serializable]
+        public class Data
+        {
+            public ChangeStateEvent EventToReceive = ChangeStateEvent.ButtonPressed;
+            public ChangeStateType ChangeStateType = ChangeStateType.LocalScale;
+
+            public Vector3 Scale = Vector3.one * 0.95f;
+            public Vector3 Position = Vector3.up * 1;
+
+            public float ColorTint = 0.95f;
+            public Color Color = Color.white;
+            public Sprite Sprite;
+
+            public bool IsActive;
+            public float DurationAnim;
+        }
        
-        public Image ImageTarget;
-        public TextMeshProUGUI TextTarget;
+        [SerializeField] private bool IsAllowInitOnAwake = true;
 
-        public Color NormalColor = Color.white;
-        public Color StateColor = Color.white;
-        
-        private Vector3 NormalScale;
-        public Vector3 StateScaleMult = new Vector3(0.95f, 0.95f, 0.95f);
+        public Image ImageTarget { get; private set; }
+        public TextMeshProUGUI TextTarget { get; private set; }
 
-        private Vector3 NormalPosition;
-        public Vector3 StatePositionShift;
+        public Data StateData = new Data();
+        private Data Normal { get; set; }
 
-        private Sprite NormalSprite;
-        public Sprite StateSprite;
-
-        public float StateColorTint = 0.95f;
-        public bool StateActive;
-
-        public bool IsAllowInitOnAwake = true;
         private bool IsInited = false;
 
         private void Awake()
         {
-            if (!IsAllowInitOnAwake)
-                return;
-
             ImageTarget = GetComponent<Image>();
             TextTarget = GetComponent<TextMeshProUGUI>();
+
+            if (IsAllowInitOnAwake)
+                InitOnChanged();
         }
 
         private void InitOnChanged()
         {
-            if (ImageTarget != null)
-                NormalSprite = ImageTarget.sprite;
+            Normal = new Data
+            {
+                Scale = transform.localScale,
+                Position = transform.localPosition,
 
-            NormalScale = transform.localScale;
-            NormalPosition = transform.localPosition;
+                ColorTint = 1,
+                Color = ImageTarget != null ? ImageTarget.color : Color.white,
+                Sprite = ImageTarget != null ? ImageTarget.sprite : null,
+
+                IsActive = gameObject.activeSelf,
+            };
+
             IsInited = true;
         }
 
         public void ReceiveEvent(ChangeStateEvent stateEvent, bool state)
         {
-            if (EventToReceive == stateEvent)
+            if (Normal.EventToReceive == stateEvent)
             {
                 if (!IsInited)
                     InitOnChanged();
 
-                ChangeStateByEvent(state);
+                ChangeStateByEvent(Normal, state);
             }
         }
 
-        public void ChangeStateByEvent(bool state)
+        public void ChangeStateByEvent(Data data, bool state)
         {
-            switch (ChangeStateType)
+            switch (data.ChangeStateType)
             {
                 case ChangeStateType.Color:
                     if (ImageTarget != null)
-                        ImageTarget.color = state ? StateColor : NormalColor;
+                        ImageTarget.color = state ? data.Color : Normal.Color;
 
                     if (TextTarget != null)
-                        TextTarget.color = state ? StateColor : NormalColor;
+                        TextTarget.color = state ? data.Color : Normal.Color;
                     break;
 
                 case ChangeStateType.ColorTint:
                     if (ImageTarget != null)
-                        ImageTarget.color = state ? NormalColor * StateColorTint : NormalColor;
+                        ImageTarget.color = state ? Normal.Color * data.ColorTint : Normal.Color;
+
+                    if (TextTarget != null)
+                        TextTarget.color = state ? Normal.Color * data.ColorTint : Normal.Color;
                     break;
 
                 case ChangeStateType.LocalPosition:
-                    transform.localPosition = state ? NormalPosition + StatePositionShift : NormalPosition;
+                    transform.localPosition = state ? Normal.Position + data.Position : Normal.Position;
                     break;
 
                 case ChangeStateType.LocalScale:
-                    Vector3 resScale = NormalScale;
+                    Vector3 resScale = Normal.Scale;
                     if (state) 
-                        resScale.Scale(StateScaleMult);
+                        resScale.Scale(data.Scale);
 
                     transform.localScale = resScale;
                     break;
 
                 case ChangeStateType.OnOff:
-                    gameObject.SetActive(state ? StateActive : !StateActive);
+                    var active = state ? data.IsActive : Normal.IsActive;
+                    gameObject.SetActive(active);
                     break;
 
-                case ChangeStateType.Image:
+                case ChangeStateType.Sprite:
                     if (ImageTarget != null)
-                        ImageTarget.sprite = state ? StateSprite : NormalSprite;
+                        ImageTarget.sprite = state ? data.Sprite : Normal.Sprite;
                     break;
             }
         }
 
         public void RevertToDefault()
         {
-            ChangeStateByEvent(false);
+            ChangeStateByEvent(Normal, false);
         }
     }
 }

@@ -6,14 +6,6 @@ using UnityEngine.EventSystems;
 
 namespace ButtonListeners
 {
-    public enum ChangeStateEvent
-    {
-        ElementSelected,
-        ElementLocked,
-        ButtonPressed,
-        MouseOver
-    }
-
     [ExecuteAlways]
     [SelectionBase]
     [DisallowMultipleComponent]

@@ -5,51 +5,56 @@ using UnityEngine;
 [CustomEditor(typeof(ChangeStateElement))]
 public class ChangeStateElementInspector : Editor
 {
+    private ChangeStateElement element;
+
     public override void OnInspectorGUI()
     {
-        ChangeStateElement elem = target as ChangeStateElement;
+        element = target as ChangeStateElement;
+        EditorGUI.BeginChangeCheck();
 
+        var data = element.StateData;
+        data = DrawDataFields(data);
+
+        if (EditorGUI.EndChangeCheck())
+            element.StateData = data;
+    }
+
+    protected ChangeStateElement.Data DrawDataFields(ChangeStateElement.Data data)
+    {
         GUILayout.BeginHorizontal();
         {
-            elem.EventToReceive = (ChangeStateEvent)EditorGUILayout.EnumPopup(elem.EventToReceive);
-            GUILayout.Space(10);
-            elem.ChangeStateType = (ChangeStateType)EditorGUILayout.EnumPopup(elem.ChangeStateType);
+            data.EventToReceive = (ChangeStateEvent)EditorGUILayout.EnumPopup(data.EventToReceive);
+            GUILayout.FlexibleSpace();
+            data.ChangeStateType = (ChangeStateType)EditorGUILayout.EnumPopup(data.ChangeStateType);
         }
         GUILayout.EndHorizontal();
 
-        switch (elem.ChangeStateType)
+        switch (data.ChangeStateType)
         {
-            case ChangeStateType.Color:
-                elem.NormalColor = EditorGUILayout.ColorField("Normal Color", elem.NormalColor);
-                elem.StateColor = EditorGUILayout.ColorField("State Color", elem.StateColor);
-
+            case ChangeStateType.LocalScale:
+                data.Scale = EditorGUILayout.Vector3Field("ScaleMult", data.Scale);
+                data.DurationAnim = EditorGUILayout.FloatField("Tween time: ", data.DurationAnim);
+                break;
+            case ChangeStateType.LocalPosition:
+                data.Position = EditorGUILayout.Vector3Field("Position Shift", data.Position);
                 break;
 
             case ChangeStateType.ColorTint:
-                elem.StateColorTint = EditorGUILayout.FloatField("Color Tint: ", elem.StateColorTint);
+                data.ColorTint = EditorGUILayout.FloatField("Color Tint: ", data.ColorTint);
                 break;
-
-            case ChangeStateType.LocalPosition:
-                elem.StatePositionShift = EditorGUILayout.Vector3Field("PositionShift", elem.StatePositionShift);
+            case ChangeStateType.Color:
+                data.Color = EditorGUILayout.ColorField("Color", data.Color);
                 break;
-
-            case ChangeStateType.LocalScale:
-                elem.StateScaleMult = EditorGUILayout.Vector3Field("ScaleMult", elem.StateScaleMult);
+            case ChangeStateType.Sprite:
+                data.Sprite = (Sprite)EditorGUILayout.ObjectField("Sprite", data.Sprite, typeof(Sprite), false);
                 break;
 
             case ChangeStateType.OnOff:
-                DrawOnOffToggles(elem);
-                break;
-
-            case ChangeStateType.Image:
-                elem.StateSprite = (Sprite) EditorGUILayout.ObjectField("Sprite", elem.StateSprite, typeof(Sprite), false);
+                data.IsActive = EditorGUILayout.Toggle("Active On State", data.IsActive);
                 break;
         }
-    }
 
-    private void DrawOnOffToggles(ChangeStateElement elem)
-    {
-        elem.StateActive = EditorGUILayout.Toggle("Active On State", elem.StateActive);
+        return data;
     }
 }
 
