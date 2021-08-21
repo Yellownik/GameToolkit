@@ -15,10 +15,11 @@ namespace ButtonListeners
         [SerializeField] private bool Interactable = true;
         [SerializeField] private bool PlaySound = true;
 
-        [SerializeField] private bool ChosenState;
-        [SerializeField] private bool LockedState;
-
         [SerializeField] private List<ChangeStateElement> ChangeStateElements;
+
+        [Space]
+        [SerializeField] private ChangeStateEvent ChangeStateEvent;
+        [SerializeField] private bool IsStateActive = true;
 
         public event Action OnClick = () => { };
 
@@ -27,6 +28,9 @@ namespace ButtonListeners
         
         public event Action OnEnter = () => { };
         public event Action OnExit = () => { };
+
+        public bool ChosenState { get; private set; }
+        public bool LockedState { get; private set; }
 
         private bool IsPointerDown;
         private bool IsPointerInside;
@@ -90,7 +94,7 @@ namespace ButtonListeners
                 //SoundManager.Instance.PlaySound(_soundName);
 
             IsPointerDown = true;
-            BroadcastEvent(ChangeStateEvent.ButtonPressed, true);
+            BroadcastEvent(ChangeStateEvent.ButtonPressed, IsPointerDown);
             OnDown();
         }
 
@@ -103,7 +107,7 @@ namespace ButtonListeners
                 return;
 
             IsPointerDown = false;
-            BroadcastEvent(ChangeStateEvent.ButtonPressed, false);
+            BroadcastEvent(ChangeStateEvent.ButtonPressed, IsPointerDown);
             OnUp();
         }
 
@@ -117,6 +121,7 @@ namespace ButtonListeners
 
             OnEnter();
             IsPointerInside = true;
+            BroadcastEvent(ChangeStateEvent.MouseOver, IsPointerInside);
         }
 
         public void OnPointerExit(PointerEventData eventData)
@@ -128,8 +133,8 @@ namespace ButtonListeners
                 return;
 
             OnExit();
-            BroadcastEvent(ChangeStateEvent.ButtonPressed, false);
             IsPointerInside = false;
+            BroadcastEvent(ChangeStateEvent.MouseOver, IsPointerInside);
         }
 
         private void BroadcastEvent(ChangeStateEvent eventType, bool state)
@@ -149,10 +154,12 @@ namespace ButtonListeners
             OnExit = () => { };
         }
 
+
         [Button]
-        public void ChangeLockState()
+        private void BroadcastEvent_Editor()
         {
-            SetLocked(!LockedState);
+            BroadcastEvent(ChangeStateEvent, IsStateActive);
+            IsStateActive = !IsStateActive;
         }
 
         [Button]
