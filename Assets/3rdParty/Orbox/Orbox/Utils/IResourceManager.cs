@@ -21,10 +21,10 @@ namespace Orbox.Utils
             where TEnum : struct, IComparable, IConvertible, IFormattable;
 
         
-        GameObject CreatePrefabInstance<TEnum>(TEnum resource)
+        GameObject CreatePrefabInstance<TEnum>(TEnum resource, Transform parent)
             where TEnum : struct, IComparable, IConvertible, IFormattable;
 
-        TResult CreatePrefabInstance<TEnum, TResult>(TEnum resource)
+        TResult CreatePrefabInstance<TEnum, TResult>(TEnum resource, Transform parent)
             where TEnum : struct, IComparable, IConvertible, IFormattable
             where TResult : class;
 
@@ -32,19 +32,19 @@ namespace Orbox.Utils
         //Use this methods to avoid heap memory allocation and reduce prefab creation time.
         //You have to disable GameObject to make it available from pool.
 
-        GameObject GetFromPool<TEnum>(TEnum resource)
+        GameObject GetFromPool<TEnum>(TEnum resource, Transform parent)
             where TEnum : struct, IComparable, IConvertible, IFormattable;
 
-        TResult GetFromPool<TEnum, TResult>(TEnum resource)
+        TResult GetFromPool<TEnum, TResult>(TEnum resource, Transform parent)
             where TEnum : struct, IComparable, IConvertible, IFormattable
             where TResult : class;
 
         //Warm up the cache
 
-        void WarmAll<TEnum>()
+        void WarmAll<TEnum>(Transform parent)
             where TEnum : struct, IComparable, IConvertible, IFormattable;
 
-        void Warm<TEnum>(TEnum resource)
+        void Warm<TEnum>(TEnum resource, Transform parent)
             where TEnum : struct, IComparable, IConvertible, IFormattable;
 
         
