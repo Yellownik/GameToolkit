@@ -8,6 +8,7 @@ namespace Core
 	public class Root : MonoBehaviour
 	{
 		public static ITimerService TimerService { get; private set; }
+		public static IResourceManager ResourceManager { get; private set; }
 
 		private static Transform RootTransform;
 
@@ -21,6 +22,7 @@ namespace Core
 		private void Init()
 		{
 			TimerService = MonoExtensions.MakeComponent<TimerService>(RootTransform);
+			ResourceManager = new ResourceManager();
 		}
 	}
 }
