@@ -13,6 +13,7 @@ namespace Core
 		public static InputManager InputManager { get; private set; }
 
 		public static AudioManager AudioManager { get; private set; }
+		public static CameraManager CameraManager { get; private set; }
 
 
 		private static Transform RootTransform;
@@ -29,6 +30,7 @@ namespace Core
 			ResourceManager = new ResourceManager();
 			TimerService = MonoExtensions.MakeComponent<TimerService>(RootTransform);
 			InputManager = MonoExtensions.MakeComponent<InputManager>(RootTransform);
+			CameraManager = MonoExtensions.MakeComponent<CameraManager>(RootTransform);
 
 			AudioManager = CreateAudioManager(ResourceManager, TimerService);
 		}
