@@ -100,7 +100,7 @@ namespace ButtonListeners
 
         public static void Reset()
         {
-            IsActive = true;
+            SetActiveState(true);
 
             foreach (var button in Buttons)
                 button.Key.ClearEvents();

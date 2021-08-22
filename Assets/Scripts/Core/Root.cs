@@ -10,7 +10,10 @@ namespace Core
 	{
 		public static IResourceManager ResourceManager { get; private set; }
 		public static ITimerService TimerService { get; private set; }
+		public static InputManager InputManager { get; private set; }
+
 		public static AudioManager AudioManager { get; private set; }
+
 
 		private static Transform RootTransform;
 
@@ -25,6 +28,7 @@ namespace Core
 		{
 			ResourceManager = new ResourceManager();
 			TimerService = MonoExtensions.MakeComponent<TimerService>(RootTransform);
+			InputManager = MonoExtensions.MakeComponent<InputManager>(RootTransform);
 
 			AudioManager = CreateAudioManager(ResourceManager, TimerService);
 		}
