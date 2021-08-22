@@ -1,12 +1,6 @@
-﻿using AudioSources;
-using Core;
+﻿using Core;
 using DG.Tweening;
-using DG.Tweening.Core;
-using DG.Tweening.Plugins.Options;
-using Orbox.Async;
 using Orbox.Utils;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace AudioSources
