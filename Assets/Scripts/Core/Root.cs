@@ -10,10 +10,12 @@ namespace Core
 	public class Root : MonoBehaviour
 	{
 		public static IResourceManager ResourceManager { get; private set; }
+		public static IUIRoot UIRoot { get; private set; }
+		public static ViewFactory ViewFactory { get; private set; }
+
 		public static ITimerService TimerService { get; private set; }
 		public static InputManager InputManager { get; private set; }
 
-		public static IUIRoot UIRoot { get; private set; }
 
 		public static AudioManager AudioManager { get; private set; }
 		public static CameraManager CameraManager { get; private set; }
@@ -32,10 +34,11 @@ namespace Core
 		private void Init()
 		{
 			ResourceManager = new ResourceManager();
-			TimerService = MonoExtensions.MakeComponent<TimerService>(RootTransform);
-
-			InputManager = new InputManager(TimerService);
 			UIRoot = ResourceManager.CreatePrefabInstance<EComponents, UIRoot>(EComponents.UIRoot, RootTransform);
+			ViewFactory = new ViewFactory(ResourceManager, UIRoot);
+
+			TimerService = MonoExtensions.MakeComponent<TimerService>(RootTransform);
+			InputManager = new InputManager(TimerService);
 
 			AudioManager = CreateAudioManager(ResourceManager, TimerService);
 			CameraManager = MonoExtensions.MakeComponent<CameraManager>(RootTransform);
