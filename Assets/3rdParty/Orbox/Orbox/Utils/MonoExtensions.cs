@@ -28,12 +28,15 @@ namespace Orbox.Utils
 
         }
 
-        public static T MakeComponent<T>() where T : Component
+        public static T MakeComponent<T>(Transform parent = null) where T : Component
         {
             var obj = new GameObject();
             obj.name = typeof(T).Name;
-            var component = obj.AddComponent<T>();
 
+            if (parent != null)
+                obj.transform.SetParent(parent);
+
+            var component = obj.AddComponent<T>();
             return component;
         }
 

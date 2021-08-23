@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Orbox.Async;
 using UnityEngine;
@@ -6,7 +7,7 @@ using UnityEngine;
 namespace Orbox.Utils
 {
     //orbox: TODO: there is a possibility to increase performance here. 
-    public class Timers : MonoBehaviour , ITimers
+    public class Timers : MonoBehaviour, ITimers
     {       
         private List<Timer> FreeTimers = new List<Timer>();
         private List<Timer> UsedTimers = new List<Timer>();
@@ -32,7 +33,7 @@ namespace Orbox.Utils
             private float ElapsedTime;
 
             private Timers Owner;
-            private Deferred Deferred = new Deferred();
+            private Promise Deferred = new Promise();
 
             private int InitializeFrameCount = 0;
 
@@ -69,7 +70,7 @@ namespace Orbox.Utils
                     }
                     finally
                     {
-                        Deferred = new Deferred(); //orbox: TODO: Use Deferred Pool
+                        Deferred = new Promise(); //orbox: TODO: Use Deferred Pool
                         Owner.Release(this);
                     }
                 }

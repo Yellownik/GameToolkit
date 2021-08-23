@@ -29,7 +29,7 @@ namespace Orbox.Async
 
         public IPromise Clone()
         {
-            var clone = new Deferred();
+            var clone = new Promise();
 
             AssignDisposer(clone, Disposer);
 
@@ -100,7 +100,7 @@ namespace Orbox.Async
 
         public IPromise Catch()
         {
-            var deferred = new Deferred();
+            var deferred = new Promise();
 
             AssignDisposer(deferred, Disposer);
 
@@ -112,7 +112,7 @@ namespace Orbox.Async
 
         public IPromise Catch(Predicate<RejectReason> match, Func<RejectReason, IPromise> recover)
         {
-            var deferred = new Deferred();
+            var deferred = new Promise();
 
             AssignDisposer(deferred, Disposer);
 
@@ -158,7 +158,7 @@ namespace Orbox.Async
 
         public IPromise Then(Func<IPromise> next)
         {
-            var deferred = new Deferred();
+            var deferred = new Promise();
 
             AssignDisposer(deferred, Disposer);
 
@@ -180,7 +180,7 @@ namespace Orbox.Async
 
         public IPromise<TNext> Then<TNext>(Func<IPromise<TNext>> next)
         {
-            var deferred = new Deferred<TNext>();
+            var deferred = new Promise<TNext>();
 
             AssignDisposer(deferred, Disposer);
 
@@ -201,7 +201,7 @@ namespace Orbox.Async
 
         public IPromise AddDisposer(IDisposer disposer)
         {
-            var deferred = new Deferred();
+            var deferred = new Promise();
 
             AssignDisposer(deferred, disposer);
 

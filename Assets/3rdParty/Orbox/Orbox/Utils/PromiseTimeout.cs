@@ -24,7 +24,7 @@ namespace Orbox.Utils
 
         public static IPromise AddTimeout(IPromise promise, ITimers timers, float timeout)
         {
-            var result = new Deferred();
+            var result = new Promise();
             var status = EStatus.Pending;
 
             var timeoutPromise = timers.Wait(timeout);
@@ -61,7 +61,7 @@ namespace Orbox.Utils
 
         public static IPromise<T> AddTimeout<T>(IPromise<T> promise, ITimers timers, float timeout)
         {
-            var result = new Deferred<T>();
+            var result = new Promise<T>();
             var status = EStatus.Pending;
 
             var timeoutPromise = timers.Wait(timeout);
