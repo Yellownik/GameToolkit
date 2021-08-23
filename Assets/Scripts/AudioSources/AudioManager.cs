@@ -22,7 +22,7 @@ namespace AudioSources
 			Timers = timers;
 		}
 
-		public void PlayEffect(ESounds eEffect)
+		public void PlaySound(ESounds eEffect)
 		{
 			SoundManager.Play(eEffect);
 		}
