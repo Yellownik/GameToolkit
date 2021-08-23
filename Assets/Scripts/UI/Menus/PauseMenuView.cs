@@ -1,4 +1,5 @@
-﻿using Core;
+﻿using ButtonListeners;
+using Core;
 using DG.Tweening;
 using Orbox.Async;
 using Orbox.Utils;
@@ -12,8 +13,8 @@ namespace UI.Menus
 	public class PauseMenuView : BaseMenuView
 	{
 		[SerializeField] private Slider VolumeSlider;
-		[SerializeField] private Button ReturnButton;
-		[SerializeField] private Button ExitButton;
+		[SerializeField] private ButtonListener ReturnButton;
+		[SerializeField] private ButtonListener ExitButton;
 
 		[Space]
 		[SerializeField] private float VolumeApplyTime = 0.3f;
@@ -52,8 +53,8 @@ namespace UI.Menus
 		private void Start()
 		{
 			VolumeSlider.onValueChanged.AddListener(OnVolumeSliderValueChanged);
-			ReturnButton.onClick.AddListener(OnReturnButtonClicked);
-			ExitButton.onClick.AddListener(OnExitButtonClicked);
+			ReturnButton.AddFunction(OnReturnButtonClicked);
+			ExitButton.AddFunction(OnExitButtonClicked);
 		}
 
 		public void ShowSettingsOnly(bool isSettings)

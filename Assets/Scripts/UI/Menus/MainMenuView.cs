@@ -1,21 +1,31 @@
-﻿using Orbox.Async;
+﻿using ButtonListeners;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UI;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace UI.Menus
 {
 	public class MainMenuView : BaseMenuView
 	{
-		[SerializeField] private Button PlayButton;
-		[SerializeField] private Button SettingsButton;
-		[SerializeField] private Button ExitButton;
+		[SerializeField] private ButtonListener PlayButton;
+		[SerializeField] private ButtonListener SettingsButton;
+		[SerializeField] private ButtonListener ExitButton;
 
-		public Button.ButtonClickedEvent PlayClickEvent => PlayButton.onClick;
-		public Button.ButtonClickedEvent SettingsClickEvent => SettingsButton.onClick;
-		public Button.ButtonClickedEvent ExitClickEvent => ExitButton.onClick;
+		public event Action PlayClicked
+		{
+			add => PlayButton.AddFunction(value);
+			remove => PlayButton.RemoveFunctionsFromButton();
+		}
+
+		public event Action SettingsClicked
+		{
+			add => SettingsButton.AddFunction(value);
+			remove => SettingsButton.RemoveFunctionsFromButton();
+		}
+
+		public event Action ExitClicked
+		{
+			add => ExitButton.AddFunction(value);
+			remove => ExitButton.RemoveFunctionsFromButton();
+		}
 	}
 }
