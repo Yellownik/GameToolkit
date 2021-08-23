@@ -17,6 +17,7 @@ namespace Core
 
 		public static AudioManager AudioManager { get; private set; }
 		public static CameraManager CameraManager { get; private set; }
+		public static FadeManager FadeManager { get; private set; }
 
 
 		private static Transform RootTransform;
@@ -38,6 +39,9 @@ namespace Core
 
 			AudioManager = CreateAudioManager(ResourceManager, TimerService);
 			CameraManager = MonoExtensions.MakeComponent<CameraManager>(RootTransform);
+
+			FadeManager = ResourceManager.CreatePrefabInstance<EComponents, FadeManager>(EComponents.FadeManager, RootTransform);
+			FadeManager.Init(CameraManager, InputManager, UIRoot);
 		}
 
 		private static AudioManager CreateAudioManager(IResourceManager resourceManager, ITimerService timerService)
