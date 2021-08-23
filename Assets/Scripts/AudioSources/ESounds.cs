@@ -2,6 +2,7 @@
 {
 	public enum ESounds
 	{
+		Click,
 		Bark,
 	}
 }
