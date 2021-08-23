@@ -29,7 +29,8 @@ namespace Core
 		{
 			ResourceManager = new ResourceManager();
 			TimerService = MonoExtensions.MakeComponent<TimerService>(RootTransform);
-			InputManager = MonoExtensions.MakeComponent<InputManager>(RootTransform);
+
+			InputManager = new InputManager(TimerService);
 			CameraManager = MonoExtensions.MakeComponent<CameraManager>(RootTransform);
 
 			AudioManager = CreateAudioManager(ResourceManager, TimerService);

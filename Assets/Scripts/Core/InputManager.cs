@@ -4,11 +4,16 @@ using UnityEngine;
 
 namespace Core
 {
-	public class InputManager : MonoBehaviour
+	public class InputManager
 	{
 		public bool IsActive { get; private set; } = true;
 
 		public event Action GamePausing = () => { };
+
+		public InputManager(ITimerService timerService)
+		{
+			timerService.SubscribeForUpdate(InputUpdate);
+		}
 
 		public void SetActiveState(bool isActive)
 		{
@@ -16,7 +21,7 @@ namespace Core
 			ButtonEventListener.SetActiveState(isActive);
 		}
 
-		private void Update()
+		private void InputUpdate()
 		{
 			if (Input.GetKeyDown(KeyCode.Escape))
 			{
