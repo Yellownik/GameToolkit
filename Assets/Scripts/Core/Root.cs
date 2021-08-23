@@ -2,6 +2,7 @@
 using Orbox.Utils;
 using System.Collections;
 using System.Collections.Generic;
+using UI;
 using UnityEngine;
 
 namespace Core
@@ -11,6 +12,8 @@ namespace Core
 		public static IResourceManager ResourceManager { get; private set; }
 		public static ITimerService TimerService { get; private set; }
 		public static InputManager InputManager { get; private set; }
+
+		public static IUIRoot UIRoot { get; private set; }
 
 		public static AudioManager AudioManager { get; private set; }
 		public static CameraManager CameraManager { get; private set; }
@@ -31,9 +34,10 @@ namespace Core
 			TimerService = MonoExtensions.MakeComponent<TimerService>(RootTransform);
 
 			InputManager = new InputManager(TimerService);
-			CameraManager = MonoExtensions.MakeComponent<CameraManager>(RootTransform);
+			UIRoot = ResourceManager.CreatePrefabInstance<EComponents, UIRoot>(EComponents.UIRoot, RootTransform);
 
 			AudioManager = CreateAudioManager(ResourceManager, TimerService);
+			CameraManager = MonoExtensions.MakeComponent<CameraManager>(RootTransform);
 		}
 
 		private static AudioManager CreateAudioManager(IResourceManager resourceManager, ITimerService timerService)
