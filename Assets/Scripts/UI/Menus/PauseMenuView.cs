@@ -1,10 +1,8 @@
 ﻿using ButtonListeners;
 using Core;
 using DG.Tweening;
-using Orbox.Async;
 using Orbox.Utils;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,6 +10,7 @@ namespace UI.Menus
 {
 	public class PauseMenuView : BaseMenuView
 	{
+		[Header("PauseMenuView")]
 		[SerializeField] private Slider VolumeSlider;
 		[SerializeField] private ButtonListener ReturnButton;
 		[SerializeField] private ButtonListener ExitButton;

@@ -6,6 +6,7 @@ namespace UI.Menus
 {
 	public class MainMenuView : BaseMenuView
 	{
+		[Header("MainMenuView")]
 		[SerializeField] private ButtonListener PlayButton;
 		[SerializeField] private ButtonListener SettingsButton;
 		[SerializeField] private ButtonListener ExitButton;
