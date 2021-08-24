@@ -19,15 +19,6 @@ namespace UI.Menus
 		[Space]
 		[SerializeField] private float VolumeApplyTime = 0.3f;
 
-		[Space]
-		[SerializeField] private float AnimTime = 0.3f;
-		[SerializeField] private float FadeFrom = 0.3f;
-		[SerializeField] private float ScaleFrom = 0.8f;
-
-		[Space]
-		[SerializeField] private CanvasGroup CanvasGroup;
-		[SerializeField] private List<Transform> TransformForScale;
-
 		private ISoundManager SoundManager;
 		//private SaveManager SaveManager;
 
@@ -35,19 +26,11 @@ namespace UI.Menus
 		public event Action ReturnClicked = () => { };
 		public event Action ExitClicked = () => { };
 
-		public bool IsShown { get; private set; }
-		public bool IsAnimating { get; private set; }
-
 		private void Awake()
 		{
 			SoundManager = Root.AudioManager.SoundManager;
 			//SaveManager = Root.SaveManager;
 			TryExtractSavedData();
-
-			foreach (var trans in TransformForScale)
-				trans.localScale = Vector3.one * ScaleFrom;
-
-			CanvasGroup.alpha = FadeFrom;
 		}
 
 		private void Start()
@@ -107,69 +90,5 @@ namespace UI.Menus
 			/*SaveManager.SetVolume(SoundManager.GetVolume());
 			SaveManager.SaveData();*/
 		}
-
-		#region BasseView
-		public override void Disable()
-		{
-			IsShown = false;
-			gameObject.SetActive(false);
-		}
-
-		public override void Enable()
-		{
-			IsShown = false;
-			gameObject.SetActive(true);
-		}
-
-		public override IPromise Hide()
-		{
-			SaveSettings();
-
-			var promise = ShowAnimated(false);
-			promise.Done(() =>
-			{
-				IsShown = false;
-				Disable();
-			});
-			return promise;
-		}
-
-		public override IPromise Show()
-		{
-			Enable();
-			IsShown = true;
-
-			var promise = ShowAnimated(true);
-			return promise;
-		}
-
-		private IPromise ShowAnimated(bool isShow)
-		{
-			IsAnimating = true;
-			var promise = new Promise();
-
-			if (isShow)
-			{
-				foreach (var trans in TransformForScale)
-					trans.DOScale(1, AnimTime);
-
-				CanvasGroup.DOFade(1, AnimTime)
-					.OnComplete(() => promise.Resolve());
-			}
-			else
-			{
-				foreach (var trans in TransformForScale)
-					trans.DOScale(ScaleFrom, AnimTime);
-
-				CanvasGroup.DOFade(FadeFrom, AnimTime)
-					.OnComplete(() => promise.Resolve());
-			}
-
-			promise
-				.Done(() => IsAnimating = false);
-			return promise;
-		}
-
-		#endregion
 	}
 }

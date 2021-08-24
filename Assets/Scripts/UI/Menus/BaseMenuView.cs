@@ -1,44 +1,63 @@
+using DG.Tweening;
 using Orbox.Async;
+using System.Collections.Generic;
 using UnityEngine;
+using Utils;
 
 namespace UI.Menus
 {
     [RequireComponent(typeof(RectTransform))]
     public abstract class BaseMenuView : MonoBehaviour
     {
-        private RectTransform _RectTransform;
-        protected RectTransform RectTransform
-        {
-            get
-            {
-                if (_RectTransform == null)
-                    _RectTransform = GetComponent<RectTransform>();
+        [SerializeField] protected CanvasGroup CanvasGroup;
+        [SerializeField] protected List<Transform> TransformsForScale;
 
-                return _RectTransform;
-            }
+        public bool IsShown { get; protected set; }
+        public bool IsAnimating { get; protected set; }
+
+        #region Show/Hide
+        public virtual void Enable()
+        {
+            IsShown = true;
+            gameObject.SetActive(true);
         }
 
         public virtual void Disable()
         {
+            IsShown = false;
             gameObject.SetActive(false);
-        }
-
-        public virtual void Enable()
-        {
-            gameObject.SetActive(true);
-        }
-
-        public virtual IPromise Hide()
-        {
-            Disable();
-            return new Promise().Resolve();
         }
 
         public virtual IPromise Show()
         {
             Enable();
-            return new Promise().Resolve();
+            return ShowAnimated(true);
         }
+
+        public virtual IPromise Hide()
+        {
+            return ShowAnimated(false)
+                        .Done(Disable);
+        }
+
+        protected virtual IPromise ShowAnimated(bool isShow)
+        {
+            IsAnimating = true;
+            var promise = new Promise();
+
+            foreach (var trans in TransformsForScale)
+                trans.DoScale(isShow);
+
+            CanvasGroup.DoFade(isShow)
+                .OnComplete(() =>
+                {
+                    IsAnimating = false;
+                    promise.Resolve();
+                });
+
+            return promise;
+        }
+        #endregion
 
         public virtual void SetParent(RectTransform parent)
         {
@@ -48,11 +67,6 @@ namespace UI.Menus
         public virtual void SetParent(Transform parent)
         {
             transform.SetParent(parent, false);
-        }
-
-        public void SetAnchoredPosition(Vector3 anchoredPosition)
-        {
-            RectTransform.anchoredPosition = anchoredPosition;
         }
     }
 }
