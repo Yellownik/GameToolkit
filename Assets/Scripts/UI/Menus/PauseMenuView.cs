@@ -1,7 +1,9 @@
 ﻿using ButtonListeners;
 using Core;
 using DG.Tweening;
+using Orbox.Async;
 using Orbox.Utils;
+using Saving;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,17 +20,18 @@ namespace UI.Menus
 		[Space]
 		[SerializeField] private float VolumeApplyTime = 0.3f;
 
+		private ISaveManager SaveManager;
 		private ISoundManager SoundManager;
-		//private SaveManager SaveManager;
 
 		private Tweener VolumeApplyTweener;
 		public event Action ReturnClicked = () => { };
 		public event Action ExitClicked = () => { };
 
-		private void Awake()
+		public void Init(ISaveManager saveManager, ISoundManager soundManager)
 		{
-			SoundManager = Root.AudioManager.SoundManager;
-			//SaveManager = Root.SaveManager;
+			SaveManager = saveManager;
+			SoundManager = soundManager;
+
 			TryExtractSavedData();
 		}
 
@@ -39,6 +42,13 @@ namespace UI.Menus
 			ExitButton.AddFunction(OnExitButtonClicked);
 		}
 
+		public override IPromise Hide()
+		{
+			SaveSettings();
+
+			return base.Hide();
+		}
+
 		public void ShowSettingsOnly(bool isSettings)
 		{
 			ExitButton.gameObject.SetActive(!isSettings);
@@ -46,7 +56,7 @@ namespace UI.Menus
 
 		private void TryExtractSavedData()
 		{
-			/*if (SaveManager.HasSavedData)
+			if (SaveManager.HasSavedData)
 			{
 				var volume = SaveManager.SettingsData.Volume;
 				VolumeSlider.value = volume;
@@ -55,7 +65,7 @@ namespace UI.Menus
 			else
 			{
 				SoundManager.SetVolume(VolumeSlider.value);
-			}*/
+			}
 		}
 
 		private void OnVolumeSliderValueChanged(float value)
@@ -86,8 +96,8 @@ namespace UI.Menus
 
 		private void SaveSettings()
 		{
-			/*SaveManager.SetVolume(SoundManager.GetVolume());
-			SaveManager.SaveData();*/
+			SaveManager.SetVolume(SoundManager.GetVolume());
+			SaveManager.SaveData();
 		}
 	}
 }

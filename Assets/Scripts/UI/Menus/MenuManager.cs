@@ -1,5 +1,7 @@
-﻿using Core;
+﻿using AudioSources;
+using Core;
 using Orbox.Async;
+using Saving;
 
 namespace UI.Menus
 {
@@ -16,7 +18,8 @@ namespace UI.Menus
 		private bool IsGameStarted = false;
 		private bool IsInputActive;
 
-		public MenuManager(ViewFactory viewFactory, InputManager inputManager, FadeManager fadeManager)
+		public MenuManager(ViewFactory viewFactory, InputManager inputManager, FadeManager fadeManager, 
+			ISaveManager saveManager, AudioManager audioManager)
 		{
 			FadeManager = fadeManager;
 			InputManager = inputManager;
@@ -24,6 +27,7 @@ namespace UI.Menus
 			InputManager.GamePausing += SwitchPauseMenu;
 
 			InitMenus(viewFactory);
+			PauseMenu.Init(saveManager, audioManager.SoundManager);
 		}
 
 		private void InitMenus(ViewFactory viewFactory)

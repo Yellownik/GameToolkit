@@ -51,10 +51,10 @@ namespace Core
 			FadeManager = ResourceManager.CreatePrefabInstance<EComponents, FadeManager>(EComponents.FadeManager, RootTransform);
 			FadeManager.Init(CameraManager, InputManager, UIRoot);
 
-			MenuManager = new MenuManager(ViewFactory, InputManager, FadeManager);
-
 			SaveManager = new SaveManager();
 			SaveManager.RestoreData();
+
+			MenuManager = new MenuManager(ViewFactory, InputManager, FadeManager, SaveManager, AudioManager);
 		}
 
 		private static AudioManager CreateAudioManager(IResourceManager resourceManager, ITimerService timerService)
