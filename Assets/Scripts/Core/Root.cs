@@ -1,5 +1,6 @@
 ﻿using AudioSources;
 using Orbox.Utils;
+using Saving;
 using System.Collections;
 using System.Collections.Generic;
 using UI;
@@ -23,6 +24,8 @@ namespace Core
 		public static FadeManager FadeManager { get; private set; }
 		public static MenuManager MenuManager { get; private set; }
 
+
+		public static ISaveManager SaveManager { get; private set; }
 
 		private static Transform RootTransform;
 
@@ -49,6 +52,9 @@ namespace Core
 			FadeManager.Init(CameraManager, InputManager, UIRoot);
 
 			MenuManager = new MenuManager(ViewFactory, InputManager, FadeManager);
+
+			SaveManager = new SaveManager();
+			SaveManager.RestoreData();
 		}
 
 		private static AudioManager CreateAudioManager(IResourceManager resourceManager, ITimerService timerService)
