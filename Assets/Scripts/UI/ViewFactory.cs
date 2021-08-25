@@ -26,9 +26,9 @@ namespace UI
             return view;
         }
 
-        public MainMenuView CreateLastMenuView()
+        public TitresMenuView CreateTitresMenuView()
         {
-            var view = ResourceManager.CreatePrefabInstance<EViews, MainMenuView>(EViews.TitresMenuView, UIRoot.MenuCanvas);
+            var view = ResourceManager.CreatePrefabInstance<EViews, TitresMenuView>(EViews.TitresMenuView, UIRoot.MenuCanvas);
             return view;
         }
     }
