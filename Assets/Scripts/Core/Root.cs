@@ -3,6 +3,7 @@ using Orbox.Utils;
 using System.Collections;
 using System.Collections.Generic;
 using UI;
+using UI.Menus;
 using UnityEngine;
 
 namespace Core
@@ -20,6 +21,7 @@ namespace Core
 		public static AudioManager AudioManager { get; private set; }
 		public static CameraManager CameraManager { get; private set; }
 		public static FadeManager FadeManager { get; private set; }
+		public static MenuManager MenuManager { get; private set; }
 
 
 		private static Transform RootTransform;
@@ -45,6 +47,8 @@ namespace Core
 
 			FadeManager = ResourceManager.CreatePrefabInstance<EComponents, FadeManager>(EComponents.FadeManager, RootTransform);
 			FadeManager.Init(CameraManager, InputManager, UIRoot);
+
+			MenuManager = new MenuManager(ViewFactory, InputManager, FadeManager);
 		}
 
 		private static AudioManager CreateAudioManager(IResourceManager resourceManager, ITimerService timerService)
