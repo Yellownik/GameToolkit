@@ -84,6 +84,16 @@ namespace Utils
             else
                 return renderer.DOFade(0, duration);
         }
+
+        public static Tween DoFade(this CanvasGroup renderer, bool isShow, float duration = -1)
+        {
+            CheckDuration(ref duration);
+
+            if (isShow)
+                return renderer.DOFade(1, duration).From(0);
+            else
+                return renderer.DOFade(0, duration);
+        }
         #endregion
 
         #region Set Alpha

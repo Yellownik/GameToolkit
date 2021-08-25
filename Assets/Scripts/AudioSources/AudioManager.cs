@@ -27,7 +27,7 @@ namespace AudioSources
 			SoundManager.Play(eEffect);
 		}
 
-		public void PlayTheme(EMusic newTheme, float delay = 0, float fadeTime = -1)
+		public void PlayMusic(EMusic newTheme, float delay = 0, float fadeTime = -1)
 		{
 			if (delay == 0)
 				FadeUp(newTheme, fadeTime);
@@ -36,7 +36,7 @@ namespace AudioSources
 					.Done(() => FadeUp(newTheme, fadeTime));
 		}
 
-		public void StopTheme(float delay = 0, float fadeTime = -1)
+		public void StopMusic(float delay = 0, float fadeTime = -1)
 		{
 			if (delay == 0)
 				FadeDown(fadeTime);
