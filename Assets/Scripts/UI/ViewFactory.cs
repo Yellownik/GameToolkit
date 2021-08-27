@@ -14,6 +14,7 @@ namespace UI
             ResourceManager = resourceManager;
         }
 
+        #region Menus
         public MainMenuView CreateMainMenuView()
         {
             var view = ResourceManager.CreatePrefabInstance<EViews, MainMenuView>(EViews.MainMenuView, UIRoot.MenuCanvas);
@@ -31,5 +32,6 @@ namespace UI
             var view = ResourceManager.CreatePrefabInstance<EViews, TitresMenuView>(EViews.TitresMenuView, UIRoot.MenuCanvas);
             return view;
         }
+        #endregion
     }
 }

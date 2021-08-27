@@ -1,4 +1,5 @@
 ﻿using AudioSources;
+using FlyTexts;
 using Orbox.Utils;
 using Saving;
 using System.Collections;
@@ -23,6 +24,7 @@ namespace Core
 		public static CameraManager CameraManager { get; private set; }
 		public static FadeManager FadeManager { get; private set; }
 		public static MenuManager MenuManager { get; private set; }
+		public static FlyTextManager FlyTextManager { get; private set; }
 
 
 		public static ISaveManager SaveManager { get; private set; }
@@ -41,6 +43,7 @@ namespace Core
 			ResourceManager = new ResourceManager();
 			UIRoot = ResourceManager.CreatePrefabInstance<EComponents, UIRoot>(EComponents.UIRoot, RootTransform);
 			ViewFactory = new ViewFactory(ResourceManager, UIRoot);
+			FlyTextManager = new FlyTextManager(ResourceManager);
 
 			TimerService = MonoExtensions.MakeComponent<TimerService>(RootTransform);
 			InputManager = new InputManager(TimerService);
