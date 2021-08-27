@@ -20,15 +20,9 @@ namespace FlyTexts
 		public void Spawn(Transform parent, string text, Vector3 localPos = default, float scale = 1, float time = 6, bool isUnique = true)
 		{
 			if (isUnique && UniqueFlyText != null)
-				UniqueFlyText.Cancel();
+				UniqueFlyText.Interrupt();
 
-			var flyText = ResourceManager.GetFromPool<EFlyTexts, FlyText>(EFlyTexts.Default, parent);
-			flyText.SetText(text);
-			flyText.SetWorldPosition(parent.position + localPos);
-			flyText.SetScale(scale * Vector3.one);
-
-			var sortingOrder = GetParentCanvasOrder(parent);
-			flyText.SetSortingOrder(sortingOrder + SortingOrderOffset);
+			var flyText = CreateAndInit(parent, text, localPos, scale);
 
 			if (isUnique)
 			{
@@ -45,7 +39,18 @@ namespace FlyTexts
 			}
 		}
 
+		private FlyText CreateAndInit(Transform parent, string text, Vector3 localPos = default, float scale = 1)
+		{
+			var flyText = ResourceManager.GetFromPool<EFlyTexts, FlyText>(EFlyTexts.DefaultFlyText, parent);
+			flyText.SetText(text);
+			flyText.SetWorldPosition(parent.position + localPos);
+			flyText.SetScale(scale * Vector3.one);
 
+			var sortingOrder = GetParentCanvasOrder(parent);
+			flyText.SetSortingOrder(sortingOrder + SortingOrderOffset);
+
+			return flyText;
+		}
 
 		private int GetParentCanvasOrder(Transform parent)
 		{

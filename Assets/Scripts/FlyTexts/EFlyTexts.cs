@@ -2,6 +2,6 @@
 {
     public enum EFlyTexts
     {
-        Default,
+        DefaultFlyText,
     }
 }
