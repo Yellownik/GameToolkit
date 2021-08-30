@@ -1,4 +1,5 @@
 ﻿using Orbox.Async;
+using Orbox.Signals;
 using Orbox.Utils;
 using System;
 using System.Collections;
@@ -7,7 +8,7 @@ using UnityEngine;
 
 namespace Core
 {
-    public interface ITimerService
+    public interface ITimerService : IEventPublisher
     {
         void SubscribeForUpdate(Action action);
         void SubscribeForHalfSecond(Action action);
@@ -49,6 +50,12 @@ namespace Core
         }
 
         #region Public methods
+        void IEventPublisher.Add(IEventSubscriber subscriber)
+        {
+            if (subscriber is IUpdatable updatable)
+                UpdateSubscribers.Add(updatable.Update);
+        }
+
         public void SubscribeForUpdate(Action action)
         {
             UpdateSubscribers.Add(action);

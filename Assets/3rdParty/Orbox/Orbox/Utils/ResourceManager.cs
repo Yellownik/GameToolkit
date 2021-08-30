@@ -52,19 +52,19 @@ namespace Orbox.Utils
             return go;
         }
 
-        public GameObject CreatePrefabInstance<TEnum>(TEnum resource)
+        public GameObject CreatePrefabInstance<TEnum>(TEnum resource, Transform parent)
             where TEnum : struct, IComparable, IConvertible, IFormattable
         {
             var type = typeof(TEnum);
             var value = EnumInt32ToInt.Convert(resource);
             var name = resource.ToString();
 
-            var go = Instantiate(type, value, name);
+            var go = Instantiate(type, value, name, parent);
             return go;
         }
 
 
-        public TResult CreatePrefabInstance<TEnum, TResult>(TEnum resource)
+        public TResult CreatePrefabInstance<TEnum, TResult>(TEnum resource, Transform parent)
             where TEnum : struct, IComparable, IConvertible, IFormattable
             where TResult : class
         {
@@ -72,7 +72,7 @@ namespace Orbox.Utils
             var value = EnumInt32ToInt.Convert(resource);
             var name = resource.ToString();
 
-            var go = Instantiate(type, value, name);
+            var go = Instantiate(type, value, name, parent);
             var component = go.GetComponent(typeof(TResult)) as TResult;
             return (TResult)component;
         }
@@ -80,7 +80,7 @@ namespace Orbox.Utils
         //Use this method to avoid heap memory allocation.
         //You have to disable GameObject to make it available from pool.
 
-        public GameObject GetFromPool<TEnum>(TEnum resource)
+        public GameObject GetFromPool<TEnum>(TEnum resource, Transform parent)
             where TEnum : struct, IComparable, IConvertible, IFormattable
         {
             var type = typeof(TEnum);
@@ -104,14 +104,14 @@ namespace Orbox.Utils
 
             poolItem.EnumType = type;
             poolItem.EnumValue = value;
-            poolItem.GameObject = Instantiate(type, value, name);
+            poolItem.GameObject = Instantiate(type, value, name, parent);
 
             Pool.Add(poolItem);
 
             return poolItem.GameObject;
         }
 
-        public TResult GetFromPool<TEnum, TResult>(TEnum resource)
+        public TResult GetFromPool<TEnum, TResult>(TEnum resource, Transform parent)
             where TEnum : struct, IComparable, IConvertible, IFormattable
             where TResult : class
         {
@@ -134,7 +134,7 @@ namespace Orbox.Utils
 
             poolItem.EnumType = type;
             poolItem.EnumValue = value;
-            poolItem.GameObject = Instantiate(type, value, name);
+            poolItem.GameObject = Instantiate(type, value, name, parent);
             poolItem.Component = poolItem.GameObject.GetComponent(typeof(TResult));
 
             Pool.Add(poolItem);
@@ -178,18 +178,18 @@ namespace Orbox.Utils
             return clip;
         }
 
-        public void Warm<TEnum>(TEnum resource)
+        public void Warm<TEnum>(TEnum resource, Transform parent)
             where TEnum : struct, IComparable, IConvertible, IFormattable
         {
             var type = typeof(TEnum);
             int value = EnumInt32ToInt.Convert(resource);
             var name = resource.ToString();
 
-            var gameObject = GetFromPool(type, value, name);
+            var gameObject = GetFromPool(type, value, name, parent);
             gameObject.SetActive(false);
         }
 
-        public void WarmAll<TEnum>()
+        public void WarmAll<TEnum>(Transform parent)
             where TEnum : struct, IComparable, IConvertible, IFormattable
         {
             var type = typeof(TEnum);
@@ -199,7 +199,7 @@ namespace Orbox.Utils
                 int value = EnumInt32ToInt.Convert(prefab);
                 var name = prefab.ToString();
 
-                var gameObject = GetFromPool(type, value, name);
+                var gameObject = GetFromPool(type, value, name, parent);
                 gameObject.SetActive(false);
             }
         }
@@ -266,16 +266,17 @@ namespace Orbox.Utils
             return ResourceCache[key];
         }
 
-        private GameObject Instantiate(Type type, int value, string name)
+        private GameObject Instantiate(Type type, int value, string name, Transform parent)
         {
             var template = GetAsset(type, value, name);
             var instance = GameObject.Instantiate(template) as GameObject;
             instance.SetActive(true);
+            instance.transform.SetParent(parent);
 
             return instance;
         }
 
-        private GameObject GetFromPool(Type type, int value, string name)
+        private GameObject GetFromPool(Type type, int value, string name, Transform parent)
         {
             for (int i = 0; i < Pool.Count; i++)
             {
@@ -292,7 +293,7 @@ namespace Orbox.Utils
 
             poolItem.EnumType = type;
             poolItem.EnumValue = value;
-            poolItem.GameObject = Instantiate(type, value, name);
+            poolItem.GameObject = Instantiate(type, value, name, parent);
 
             Pool.Add(poolItem);
 

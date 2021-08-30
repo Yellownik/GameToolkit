@@ -1,3 +1,5 @@
+using AudioSources;
+using Core;
 using NaughtyAttributes;
 using System;
 using System.Collections.Generic;
@@ -14,6 +16,7 @@ namespace ButtonListeners
     {
         [SerializeField] private bool Interactable = true;
         [SerializeField] private bool PlaySound = true;
+        [SerializeField] private ESounds ClickSound = ESounds.Click;
 
         [SerializeField] private List<ChangeStateElement> ChangeStateElements;
 
@@ -90,8 +93,7 @@ namespace ButtonListeners
                 EventSystem.current.SetSelectedGameObject(gameObject, eventData);
 
             if (PlaySound)
-                Debug.Log("No click sound");
-                //SoundManager.Instance.PlaySound(_soundName);
+                Root.AudioManager.PlaySound(ClickSound);
 
             IsPointerDown = true;
             BroadcastEvent(ChangeStateEvent.ButtonPressed, IsPointerDown);

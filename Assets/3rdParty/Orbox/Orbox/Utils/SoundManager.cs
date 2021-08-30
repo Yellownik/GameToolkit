@@ -29,14 +29,15 @@ namespace Orbox.Utils
 
         private IEventPublisher EventPublisher;
         private IResourceManager ResourceManager;
+        private Transform Transform;
 
-
-        public SoundManager(IResourceManager resourceManager, IEventPublisher publisher)
+        public SoundManager(IResourceManager resourceManager, IEventPublisher publisher, Transform transform)
         {
             ResourceManager = resourceManager;
             EventPublisher = publisher;
+            Transform = transform;
 
-            EventPublisher.Add(this);
+            publisher.Add(this);
         }
 
         private SoundItem GetFreeItem<TEnum>(TEnum sound) where TEnum : struct, IComparable, IConvertible, IFormattable
@@ -58,7 +59,7 @@ namespace Orbox.Utils
             }
 
             //create new Item
-            var source = ResourceManager.CreatePrefabInstance<TEnum, AudioSource>(sound);
+            var source = ResourceManager.CreatePrefabInstance<TEnum, AudioSource>(sound, Transform);
 
             var newItem = new SoundItem(type, value, source, false);
             AudioItems.Add(newItem);
