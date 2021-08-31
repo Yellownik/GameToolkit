@@ -59,7 +59,7 @@ namespace Core
 			SaveManager.RestoreData();
 
 			MenuManager = new MenuManager(ViewFactory, InputManager, FadeManager, SaveManager, AudioManager);
-			GameManager = CreateGameManager();
+			GameManager = CreateGameManager(FadeManager, AudioManager, MenuManager);
 		}
 
 		private static AudioManager CreateAudioManager(IResourceManager resourceManager, ITimerService timerService)
@@ -73,9 +73,9 @@ namespace Core
 			return audioManager;
 		}
 
-		private static GameManager CreateGameManager()
+		private static GameManager CreateGameManager(FadeManager fadeManager, AudioManager audioManager, MenuManager menuManager)
 		{
-			var gameManager = new GameManager();
+			var gameManager = new GameManager(fadeManager, audioManager, menuManager);
 			return gameManager;
 		}
 	}
