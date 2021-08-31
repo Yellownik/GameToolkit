@@ -1,5 +1,6 @@
 ﻿using AudioSources;
 using Core;
+using GameManagers;
 using Orbox.Async;
 using Saving;
 
@@ -9,6 +10,8 @@ namespace UI.Menus
 	{
 		private InputManager InputManager;
 		private FadeManager FadeManager;
+		private AudioManager AudioManager;
+		private GameManager GameManager;
 
 		private MainMenuView MainMenu;
 		private PauseMenuView PauseMenu;
@@ -19,10 +22,12 @@ namespace UI.Menus
 		private bool IsInputActive;
 
 		public MenuManager(ViewFactory viewFactory, InputManager inputManager, FadeManager fadeManager, 
-			ISaveManager saveManager, AudioManager audioManager)
+			ISaveManager saveManager, AudioManager audioManager, IPromise<GameManager> gameManagerPromise)
 		{
 			FadeManager = fadeManager;
 			InputManager = inputManager;
+			AudioManager = audioManager;
+			gameManagerPromise.Done(gm => GameManager = gm);
 
 			InputManager.GamePausing += SwitchPauseMenu;
 
@@ -116,13 +121,12 @@ namespace UI.Menus
 			if (FadeManager.IsFading)
 				return;
 
-			Root.AudioManager.StopMusic();
+			AudioManager.StopMusic();
 			FadeManager.ResetFadeCenter();
 			FadeManager.FadeOut()
 				.Done(() =>
 				{
-					throw new System.NotImplementedException();
-					//Root.GetGameManager().ExitTheGame();
+					GameManager.ExitTheGame();
 				});
 		}
 	}

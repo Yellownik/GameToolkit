@@ -1,6 +1,7 @@
 ﻿using AudioSources;
 using FlyTexts;
 using GameManagers;
+using Orbox.Async;
 using Orbox.Utils;
 using Saving;
 using System.Collections;
@@ -41,6 +42,8 @@ namespace Core
 
 		private void Init()
 		{
+			var gameManagerPromise = new Promise<GameManager>();
+
 			ResourceManager = new ResourceManager();
 			UIRoot = ResourceManager.CreatePrefabInstance<EComponents, UIRoot>(EComponents.UIRoot, RootTransform);
 			ViewFactory = new ViewFactory(ResourceManager, UIRoot);
@@ -58,8 +61,11 @@ namespace Core
 			SaveManager = new SaveManager();
 			SaveManager.RestoreData();
 
-			MenuManager = new MenuManager(ViewFactory, InputManager, FadeManager, SaveManager, AudioManager);
+			MenuManager = new MenuManager(ViewFactory, InputManager, FadeManager, SaveManager, AudioManager, gameManagerPromise);
+
+
 			GameManager = CreateGameManager(FadeManager, AudioManager, MenuManager);
+			gameManagerPromise.Resolve(GameManager);
 		}
 
 		private static AudioManager CreateAudioManager(IResourceManager resourceManager, ITimerService timerService)
