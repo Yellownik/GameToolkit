@@ -22,7 +22,7 @@ namespace GameManagers
         {
             FadeManager.SetFade(true);
             FadeManager.FadeIn(0.5f);
-            AudioManager.PlayMusic(EMusic.Main_Menu, 0.5f);
+            AudioManager.PlayMusic(EMusic.Menu_Main, 0.5f);
 
             MenuManager.ShowMainMenu();
             MenuManager.WaitForPlay()

@@ -2,7 +2,7 @@
 {
 	public enum EMusic
 	{
-		Main_Menu,
+		Menu_Main,
 		Titres,
 	}
 }
