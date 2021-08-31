@@ -64,7 +64,7 @@ namespace Core
 			MenuManager = new MenuManager(ViewFactory, InputManager, FadeManager, SaveManager, AudioManager, gameManagerPromise);
 
 
-			GameManager = CreateGameManager(FadeManager, AudioManager, MenuManager);
+			GameManager = CreateGameManager(FadeManager, AudioManager, MenuManager, ResourceManager);
 			gameManagerPromise.Resolve(GameManager);
 		}
 
@@ -79,9 +79,9 @@ namespace Core
 			return audioManager;
 		}
 
-		private static GameManager CreateGameManager(FadeManager fadeManager, AudioManager audioManager, MenuManager menuManager)
+		private static GameManager CreateGameManager(FadeManager fadeManager, AudioManager audioManager, MenuManager menuManager, IResourceManager resourceManager)
 		{
-			var gameManager = new GameManager(fadeManager, audioManager, menuManager);
+			var gameManager = new GameManager(fadeManager, audioManager, menuManager, resourceManager);
 			return gameManager;
 		}
 	}

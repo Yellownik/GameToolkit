@@ -1,5 +1,6 @@
 ﻿using AudioSources;
 using Core;
+using Orbox.Utils;
 using UI.Menus;
 using UnityEngine;
 
@@ -11,11 +12,22 @@ namespace GameManagers
         private readonly AudioManager AudioManager;
         private readonly MenuManager MenuManager;
 
-        public GameManager(FadeManager fadeManager, AudioManager audioManager, MenuManager menuManager)
+        private DemoLevel DemoLevel;
+
+        public GameManager(FadeManager fadeManager, AudioManager audioManager, MenuManager menuManager, IResourceManager resourceManager)
         {
             FadeManager = fadeManager;
             AudioManager = audioManager;
             MenuManager = menuManager;
+
+            InitLevels(resourceManager);
+        }
+
+        private void InitLevels(IResourceManager resourceManager)
+        {
+            var levelsRoot = new GameObject("GameLevels").transform;
+            DemoLevel = resourceManager.CreatePrefabInstance<EGameLevels, DemoLevel>(EGameLevels.DemoLevel, levelsRoot);
+            DemoLevel.gameObject.SetActive(false);
         }
 
         public void Run()
@@ -34,6 +46,7 @@ namespace GameManagers
             AudioManager.StopMusic();
 
             Debug.Log("Game started");
+            DemoLevel.StartLevel();
         }
 
         public void ExitTheGame()
