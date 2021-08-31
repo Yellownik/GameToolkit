@@ -271,7 +271,7 @@ namespace Orbox.Utils
             var template = GetAsset(type, value, name);
             var instance = GameObject.Instantiate(template) as GameObject;
             instance.SetActive(true);
-            instance.transform.SetParent(parent);
+            instance.transform.SetParent(parent, false);
 
             return instance;
         }
