@@ -85,7 +85,6 @@ namespace UI.Menus
 			if (!PauseMenu.IsShown)
 			{
 				IsInputActive = InputManager.IsActive;
-				InputManager.SetActiveState(false);
 
 				PauseMenu.ShowSettingsOnly(!IsGameStarted);
 				PauseMenu.Show();

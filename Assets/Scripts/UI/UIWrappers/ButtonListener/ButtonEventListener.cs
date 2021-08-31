@@ -67,7 +67,7 @@ namespace ButtonListeners
         {
             if (Buttons.ContainsKey(button) && Buttons[button] != null)
             {
-                if (IsActive)
+                if (!IsActive)
                 {
                     bool exceptionButtons = ExceptionButtonsForDisable.Contains(button);
                     if (!exceptionButtons)
