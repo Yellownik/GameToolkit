@@ -26,7 +26,9 @@ namespace GameManagers
         {
             if(ClicksToEnd <= 0)
             {
-                Root.FadeManager.FadeOut(duration: 2)
+                Root.AudioManager.StopMusic(fadeTime: 1);
+                Root.FadeManager.ResetFadeCenter();
+                Root.FadeManager.FadeOut(duration: 1)
                     .Done(EndTheGame);
                 return;
             }
@@ -37,12 +39,13 @@ namespace GameManagers
 
         private void EndTheGame()
         {
-            Root.FadeManager.FadeIn(duration: 2);
+            Root.AudioManager.PlayMusic(AudioSources.EMusic.Titres, fadeTime: 1);
             Root.MenuManager.ShowTitresMenu();
+            Root.AudioManager.StopMusic(delay: 5, fadeTime: 2);
 
-            Root.AudioManager.StopMusic(delay: 3, fadeTime: 2);
-            Root.FadeManager.FadeOut(delay: 3, duration: 2)
-                .Then(() => Root.TimerService.Wait(1))
+            Root.FadeManager.FadeIn(duration: 2)
+                .Then(() => Root.FadeManager.FadeOut(delay: 3, duration: 2))
+                .Then(() => Root.TimerService.Wait(0.5f))
                 .Done(() => Root.GameManager.ExitTheGame());
         }
     }

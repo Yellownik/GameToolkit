@@ -43,8 +43,6 @@ namespace GameManagers
 
         private void StartTheGame()
         {
-            AudioManager.StopMusic();
-
             Debug.Log("Game started");
             DemoLevel.StartLevel();
         }
