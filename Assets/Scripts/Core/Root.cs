@@ -1,5 +1,7 @@
 ﻿using AudioSources;
 using FlyTexts;
+using GameManagers;
+using Orbox.Async;
 using Orbox.Utils;
 using Saving;
 using System.Collections;
@@ -26,7 +28,7 @@ namespace Core
 		public static MenuManager MenuManager { get; private set; }
 		public static FlyTextManager FlyTextManager { get; private set; }
 
-
+		public static GameManager GameManager { get; private set; }
 		public static ISaveManager SaveManager { get; private set; }
 
 		private static Transform RootTransform;
@@ -40,6 +42,8 @@ namespace Core
 
 		private void Init()
 		{
+			var gameManagerPromise = new Promise<GameManager>();
+
 			ResourceManager = new ResourceManager();
 			UIRoot = ResourceManager.CreatePrefabInstance<EComponents, UIRoot>(EComponents.UIRoot, RootTransform);
 			ViewFactory = new ViewFactory(ResourceManager, UIRoot);
@@ -57,7 +61,11 @@ namespace Core
 			SaveManager = new SaveManager();
 			SaveManager.RestoreData();
 
-			MenuManager = new MenuManager(ViewFactory, InputManager, FadeManager, SaveManager, AudioManager);
+			MenuManager = new MenuManager(ViewFactory, InputManager, FadeManager, SaveManager, AudioManager, gameManagerPromise);
+
+
+			GameManager = CreateGameManager(FadeManager, AudioManager, MenuManager, ResourceManager);
+			gameManagerPromise.Resolve(GameManager);
 		}
 
 		private static AudioManager CreateAudioManager(IResourceManager resourceManager, ITimerService timerService)
@@ -69,6 +77,12 @@ namespace Core
 			var audioManager = ResourceManager.CreatePrefabInstance<EComponents, AudioManager>(EComponents.AudioManager, RootTransform);
 			audioManager.Init(soundManager, timerService);
 			return audioManager;
+		}
+
+		private static GameManager CreateGameManager(FadeManager fadeManager, AudioManager audioManager, MenuManager menuManager, IResourceManager resourceManager)
+		{
+			var gameManager = new GameManager(fadeManager, audioManager, menuManager, resourceManager);
+			return gameManager;
 		}
 	}
 }
