@@ -137,9 +137,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Button: {fileID: 6882889655290319805}
-  ClicksToEnd: 10
+  ClicksToEnd: 20
   RandomRange: 100
-  IsUniqueFlyText: 1
+  IsUniqueFlyText: 0
 --- !u!1 &6882889656569760008
 GameObject:
   m_ObjectHideFlags: 0

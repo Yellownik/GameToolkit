@@ -32,7 +32,7 @@ namespace FlyTexts
 
 		public void SetWorldPosition(Vector3 position)
 		{
-			Container.position = position;
+			transform.position = position;
 		}
 
 		public void SetScale(Vector3 scale)
