@@ -1,5 +1,8 @@
-﻿using ButtonListeners;
+﻿using AudioSources;
+using ButtonListeners;
 using Core;
+using FlyTexts;
+using UI.Menus;
 using UnityEngine;
 
 namespace GameManagers
@@ -11,6 +14,13 @@ namespace GameManagers
         [SerializeField] private float RandomRange = 100;
         [SerializeField] private bool IsUniqueFlyText = true;
 
+        private FadeManager FadeManager => Root.FadeManager;
+        private AudioManager AudioManager => Root.AudioManager;
+        private MenuManager MenuManager => Root.MenuManager;
+        private ITimerService TimerService => Root.TimerService;
+        private GameManager GameManager => Root.GameManager;
+        private FlyTextManager FlyTextManager => Root.FlyTextManager;
+
         void Start()
         {
             Button.AddFunction(OnClick);
@@ -19,34 +29,34 @@ namespace GameManagers
         public void StartLevel()
         {
             gameObject.SetActive(true);
-            Root.FadeManager.FadeIn();
+            FadeManager.FadeIn();
         }
 
         private void OnClick()
         {
             if(ClicksToEnd <= 0)
             {
-                Root.AudioManager.StopMusic(fadeTime: 1);
-                Root.FadeManager.ResetFadeCenter();
-                Root.FadeManager.FadeOut(duration: 1)
+                AudioManager.StopMusic(fadeTime: 1);
+                FadeManager.ResetFadeCenter();
+                FadeManager.FadeOut(duration: 1)
                     .Done(EndTheGame);
                 return;
             }
 
-            Root.FlyTextManager.Spawn(Button.transform, ClicksToEnd.ToString(), Random.insideUnitCircle * RandomRange, isUnique: IsUniqueFlyText);
+            FlyTextManager.Spawn(Button.transform, ClicksToEnd.ToString(), Random.insideUnitCircle * RandomRange, isUnique: IsUniqueFlyText);
             ClicksToEnd--;
         }
 
         private void EndTheGame()
         {
-            Root.AudioManager.PlayMusic(AudioSources.EMusic.Titres, fadeTime: 1);
-            Root.MenuManager.ShowTitresMenu();
-            Root.AudioManager.StopMusic(delay: 5, fadeTime: 2);
+            AudioManager.PlayMusic(EMusic.Titres, fadeTime: 1);
+            MenuManager.ShowTitresMenu();
+            AudioManager.StopMusic(delay: 5, fadeTime: 2);
 
-            Root.FadeManager.FadeIn(duration: 2)
-                .Then(() => Root.FadeManager.FadeOut(delay: 3, duration: 2))
-                .Then(() => Root.TimerService.Wait(0.5f))
-                .Done(() => Root.GameManager.ExitTheGame());
+            FadeManager.FadeIn(duration: 2)
+                .Then(() => FadeManager.FadeOut(delay: 3, duration: 2))
+                .Then(() => TimerService.Wait(0.5f))
+                .Done(() => GameManager.ExitTheGame());
         }
     }
 }
