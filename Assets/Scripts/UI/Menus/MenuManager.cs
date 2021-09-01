@@ -71,10 +71,10 @@ namespace UI.Menus
 			var promise = PlayDeferred;
 			PlayDeferred = new Promise();
 
+			MainMenu.Hide();
 			FadeManager.FadeOut()
 				.Done(() =>
 				{
-					MainMenu.Hide();
 					IsGameStarted = true;
 					promise.Resolve();
 				});
