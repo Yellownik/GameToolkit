@@ -98,9 +98,12 @@ namespace Core
         [Button]
         public void FadeInOutEditor()
         {
+            FadeImage.gameObject.SetActive(true);
+
             var seq = DOTween.Sequence();
             seq.Append(DOTween.To(SetDissolveValue, 0, 1, FadeTime).SetEase(Ease.Linear));
             seq.Append(DOTween.To(SetDissolveValue, 1, 0, FadeTime).SetEase(Ease.Linear));
+            seq.AppendCallback(() => FadeImage.gameObject.SetActive(false));
         }
     }
 }
