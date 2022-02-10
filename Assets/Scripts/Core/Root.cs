@@ -42,8 +42,6 @@ namespace Core
 
 		private void Init()
 		{
-			var gameManagerPromise = new Promise<GameManager>();
-
 			ResourceManager = new ResourceManager();
 			UIRoot = ResourceManager.CreatePrefabInstance<EComponents, UIRoot>(EComponents.UIRoot, RootTransform);
 			ViewFactory = new ViewFactory(ResourceManager, UIRoot);
@@ -61,11 +59,8 @@ namespace Core
 			SaveManager = new SaveManager();
 			SaveManager.RestoreData();
 
-			MenuManager = new MenuManager(ViewFactory, InputManager, FadeManager, SaveManager, AudioManager, gameManagerPromise);
-
-
-			GameManager = CreateGameManager(FadeManager, AudioManager, MenuManager, ResourceManager);
-			gameManagerPromise.Resolve(GameManager);
+			MenuManager = new MenuManager(ViewFactory, InputManager, FadeManager, SaveManager, AudioManager);
+			GameManager = new GameManager(FadeManager, AudioManager, MenuManager, ResourceManager);
 		}
 
 		private static AudioManager CreateAudioManager(IResourceManager resourceManager, ITimerService timerService)
@@ -76,13 +71,8 @@ namespace Core
 
 			var audioManager = ResourceManager.CreatePrefabInstance<EComponents, AudioManager>(EComponents.AudioManager, RootTransform);
 			audioManager.Init(soundManager, timerService);
+			
 			return audioManager;
-		}
-
-		private static GameManager CreateGameManager(FadeManager fadeManager, AudioManager audioManager, MenuManager menuManager, IResourceManager resourceManager)
-		{
-			var gameManager = new GameManager(fadeManager, audioManager, menuManager, resourceManager);
-			return gameManager;
 		}
 	}
 }

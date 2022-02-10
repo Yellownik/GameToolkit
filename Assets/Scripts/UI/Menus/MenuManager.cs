@@ -8,26 +8,26 @@ namespace UI.Menus
 {
 	public class MenuManager
 	{
-		private InputManager InputManager;
-		private FadeManager FadeManager;
-		private AudioManager AudioManager;
-		private GameManager GameManager;
+		private readonly InputManager InputManager;
+		private readonly FadeManager FadeManager;
+		private readonly AudioManager AudioManager;
 
 		private MainMenuView MainMenu;
 		private PauseMenuView PauseMenu;
 		private TitresMenuView TitresMenu;
 
-		private Promise PlayDeferred = new Promise();
+		private Promise PlayPromise = new Promise();
+		private Promise ExitPromise = new Promise();
+		
 		private bool IsGameStarted = false;
 		private bool IsInputActive;
 
 		public MenuManager(ViewFactory viewFactory, InputManager inputManager, FadeManager fadeManager, 
-			ISaveManager saveManager, AudioManager audioManager, IPromise<GameManager> gameManagerPromise)
+			ISaveManager saveManager, AudioManager audioManager)
 		{
 			FadeManager = fadeManager;
 			InputManager = inputManager;
 			AudioManager = audioManager;
-			gameManagerPromise.Done(gm => GameManager = gm);
 
 			InputManager.GamePausing += SwitchPauseMenu;
 
@@ -38,14 +38,14 @@ namespace UI.Menus
 		private void InitMenus(ViewFactory viewFactory)
 		{
 			MainMenu = viewFactory.CreateMainMenuView();
-			MainMenu.PlayClicked += StartTheGame;
+			MainMenu.PlayClicked += Play;
 			MainMenu.SettingsClicked += SwitchPauseMenu;
-			MainMenu.ExitClicked += ExitGame;
+			MainMenu.ExitClicked += Exit;
 			MainMenu.Disable();
 
 			PauseMenu = viewFactory.CreatePauseMenuView();
 			PauseMenu.ReturnClicked += HidePauseMenu;
-			PauseMenu.ExitClicked += ExitGame;
+			PauseMenu.ExitClicked += Exit;
 			PauseMenu.Disable();
 
 			TitresMenu = viewFactory.CreateTitresMenuView();
@@ -60,16 +60,21 @@ namespace UI.Menus
 
 		public IPromise WaitForPlay()
 		{
-			return PlayDeferred;
+			return PlayPromise;
 		}
 
-		private void StartTheGame()
+		public IPromise WaitForExit()
+		{
+			return ExitPromise;
+		}
+		
+		private void Play()
 		{
 			if (FadeManager.IsFading)
 				return;
 
-			var promise = PlayDeferred;
-			PlayDeferred = new Promise();
+			var promise = PlayPromise;
+			PlayPromise = new Promise();
 
 			MainMenu.Hide();
 			FadeManager.FadeOut()
@@ -85,19 +90,20 @@ namespace UI.Menus
 		private void SwitchPauseMenu()
 		{
 			if (FadeManager.IsFading || PauseMenu.IsAnimating)
-				return;
-
-			if (!PauseMenu.IsShown)
 			{
-				IsInputActive = InputManager.IsActive;
-
-				PauseMenu.ShowSettingsOnly(!IsGameStarted);
-				PauseMenu.Show();
+				return;
 			}
-			else
+
+			if (PauseMenu.IsShown)
 			{
 				HidePauseMenu();
+				return;
 			}
+			
+			IsInputActive = InputManager.IsActive;
+
+			PauseMenu.ShowSettingsOnly(!IsGameStarted);
+			PauseMenu.Show();
 		}
 
 		private void HidePauseMenu()
@@ -116,18 +122,16 @@ namespace UI.Menus
 			TitresMenu.Show();
 		}
 
-		private void ExitGame()
+		private void Exit()
 		{
 			if (FadeManager.IsFading)
 				return;
 
 			AudioManager.StopMusic();
+			
 			FadeManager.ResetFadeCenter();
 			FadeManager.FadeOut()
-				.Done(() =>
-				{
-					GameManager.ExitTheGame();
-				});
+				.Done(() => ExitPromise.Resolve());
 		}
 	}
 }

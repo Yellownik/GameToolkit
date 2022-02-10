@@ -39,15 +39,28 @@ namespace GameManagers
             MenuManager.ShowMainMenu();
             MenuManager.WaitForPlay()
                 .Done(StartTheGame);
+            MenuManager.WaitForExit()
+                .Done(ExitTheGame);
         }
 
         private void StartTheGame()
         {
-            Debug.Log("Game started");
-            DemoLevel.StartLevel();
+            DemoLevel.StartLevel()
+                .Done(ShowTitres);
         }
 
-        public void ExitTheGame()
+        private void ShowTitres()
+        {
+            AudioManager.PlayMusic(EMusic.Titres, fadeTime: 1);
+            MenuManager.ShowTitresMenu();
+            AudioManager.StopMusic(delay: 5, fadeTime: 2);
+
+            FadeManager.FadeIn(duration: 2)
+                .Then(() => FadeManager.FadeOut(delay: 3, duration: 2))
+                .Done(() => ExitTheGame());
+        }
+        
+        private void ExitTheGame()
         {
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
