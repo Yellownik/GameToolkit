@@ -20,6 +20,7 @@ namespace GameManagers
         private ITimerService TimerService => Root.TimerService;
         private GameManager GameManager => Root.GameManager;
         private FlyTextManager FlyTextManager => Root.FlyTextManager;
+        private CameraManager CameraManager => Root.CameraManager;
 
         void Start()
         {
@@ -43,7 +44,13 @@ namespace GameManagers
                 return;
             }
 
-            FlyTextManager.Spawn(Button.transform, ClicksToEnd.ToString(), Random.insideUnitCircle * RandomRange, isUnique: IsUniqueFlyText);
+
+            var mousePos = Input.mousePosition;
+            var pos = CameraManager.Camera.ScreenToWorldPoint(mousePos);
+            pos += Random.onUnitSphere * RandomRange;
+            pos.z = Button.transform.position.z;
+
+            FlyTextManager.Spawn(Button.transform, ClicksToEnd.ToString(), pos, isUnique: IsUniqueFlyText);
             ClicksToEnd--;
         }
 

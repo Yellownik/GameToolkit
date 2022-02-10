@@ -50,9 +50,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe62079573889a2479f9d47b57a36b31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TextLabel: {fileID: 5047847960256718329}
-  CanvasGroup: {fileID: 8953267566971313800}
   Container: {fileID: 2534438321926954044}
+  CanvasGroup: {fileID: 8953267566971313800}
+  TextLabel: {fileID: 5047847960256718329}
   LocalOffset: {x: 0, y: 50, z: 0}
 --- !u!223 &3837805958455740646
 Canvas:
