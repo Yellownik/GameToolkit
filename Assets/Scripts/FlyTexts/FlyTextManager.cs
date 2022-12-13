@@ -1,5 +1,6 @@
 ﻿using Orbox.Utils;
 using System.Collections.Generic;
+using Core;
 using UnityEngine;
 
 namespace FlyTexts
@@ -8,16 +9,18 @@ namespace FlyTexts
 	{
 		private const int SortingOrderOffset = 5;
 		private readonly IResourceManager ResourceManager;
+		private readonly CameraManager CameraManager;
 
 		private FlyText UniqueFlyText;
 		private List<FlyText> ActiveFlyTexts = new List<FlyText>();
 
-		public FlyTextManager(IResourceManager resourceManager)
+		public FlyTextManager(IResourceManager resourceManager, CameraManager cameraManager)
 		{
 			ResourceManager = resourceManager;
+			CameraManager = cameraManager;
 		}
 
-		public void Spawn(Transform parent, string text, Vector3 localPos = default, float scale = 1, float time = 6, bool isUnique = true)
+		public void Spawn(RectTransform parent, string text, Vector3 localPos = default, float scale = 1, float time = 6, bool isUnique = true)
 		{
 			if (isUnique && UniqueFlyText != null)
 				UniqueFlyText.Interrupt();
@@ -39,11 +42,13 @@ namespace FlyTexts
 			}
 		}
 
-		private FlyText CreateAndInit(Transform parent, string text, Vector3 localPos = default, float scale = 1)
+		private FlyText CreateAndInit(RectTransform parent, string text, Vector2 localPos = default, float scale = 1)
 		{
 			var flyText = ResourceManager.GetFromPool<EFlyTexts, FlyText>(EFlyTexts.DefaultFlyText, parent);
 			flyText.SetText(text);
-			flyText.SetWorldPosition(parent.position + localPos);
+			RectTransformUtility.ScreenPointToLocalPointInRectangle(parent, Input.mousePosition, CameraManager.Camera, out Vector2 pos);
+			flyText.GetComponent<RectTransform>().anchoredPosition = pos + localPos + new Vector2 (Screen.width, Screen.height) * 0.5f;
+			//flyText.SetWorldPosition(parent.position + localPos);
 			flyText.SetScale(scale * Vector3.one);
 
 			var sortingOrder = GetParentCanvasOrder(parent);

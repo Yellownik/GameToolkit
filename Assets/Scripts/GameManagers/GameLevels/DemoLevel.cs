@@ -19,7 +19,6 @@ namespace GameManagers
         private FadeManager FadeManager => Root.FadeManager;
         private AudioManager AudioManager => Root.AudioManager;
         private FlyTextManager FlyTextManager => Root.FlyTextManager;
-        private CameraManager CameraManager => Root.CameraManager;
 
         private Promise EndLevelPromise = new Promise();
         
@@ -60,12 +59,10 @@ namespace GameManagers
 
         private void SpawnFlyText()
         {
-            var mousePos = Input.mousePosition;
-            var pos = CameraManager.Camera.ScreenToWorldPoint(mousePos);
-            pos += Random.onUnitSphere * RandomRange;
-            pos.z = Button.transform.position.z;
+            var offset = Random.onUnitSphere * RandomRange;
+            offset.z = Button.transform.position.z;
 
-            FlyTextManager.Spawn(Button.transform, ClicksToEnd.ToString(), pos, isUnique: IsUniqueFlyText);
+            FlyTextManager.Spawn(Button.GetComponent<RectTransform>(), ClicksToEnd.ToString(), offset, isUnique: IsUniqueFlyText);
         }
     }
 }

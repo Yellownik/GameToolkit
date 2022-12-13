@@ -45,13 +45,14 @@ namespace Core
 			ResourceManager = new ResourceManager();
 			UIRoot = ResourceManager.CreatePrefabInstance<EComponents, UIRoot>(EComponents.UIRoot, RootTransform);
 			ViewFactory = new ViewFactory(ResourceManager, UIRoot);
-			FlyTextManager = new FlyTextManager(ResourceManager);
+			
+			CameraManager = MonoExtensions.MakeComponent<CameraManager>(RootTransform);
+			FlyTextManager = new FlyTextManager(ResourceManager, CameraManager);
 
 			TimerService = MonoExtensions.MakeComponent<TimerService>(RootTransform);
 			InputManager = new InputManager(TimerService);
 
 			AudioManager = CreateAudioManager(ResourceManager, TimerService);
-			CameraManager = MonoExtensions.MakeComponent<CameraManager>(RootTransform);
 
 			FadeManager = ResourceManager.CreatePrefabInstance<EComponents, FadeManager>(EComponents.FadeManager, RootTransform);
 			FadeManager.Init(CameraManager, InputManager, UIRoot);
