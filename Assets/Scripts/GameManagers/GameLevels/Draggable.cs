@@ -12,18 +12,29 @@ public class Draggable : MonoBehaviour, IPointerUpHandler, IPointerDownHandler, 
     
     private bool _isDragging;
     private bool _isCollidedWithChair;
+    private Vector3 _pressOffset;
 
     public void SetDraggingActive(bool isActive) => 
         _collider2D.enabled = isActive;
     
-    public void OnPointerDown(PointerEventData eventData) => 
-        transform.position = eventData.position;
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        _isDragging = true;
+        _pressOffset = transform.position - eventData.pointerCurrentRaycast.worldPosition;
+    }
 
-    public void OnPointerMove(PointerEventData eventData) => 
-        transform.position = eventData.position;
+    public void OnPointerMove(PointerEventData eventData)
+    {
+        if (_isDragging)
+            SetPosition(eventData);
+    }
 
+    private void SetPosition(PointerEventData eventData) => 
+        transform.position = eventData.pointerCurrentRaycast.worldPosition + _pressOffset;
+    
     public void OnPointerUp(PointerEventData eventData)
     {
+        _isDragging = false;
         OnDragEnded.Invoke(_isCollidedWithChair);
     }
 
