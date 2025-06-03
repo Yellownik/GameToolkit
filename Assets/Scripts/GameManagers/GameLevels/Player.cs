@@ -14,6 +14,8 @@ public class Player : BaseUIWrapper
     [Space]
     [SerializeField] private List<Color> _colors = new();
     
+    private int _lastColorIndex = -1;
+    
     public event Action<bool> ObDragEnded;
 
     private void Start()
@@ -45,8 +47,16 @@ public class Player : BaseUIWrapper
     
     public void ChangeHairColor()
     {
-        var idx = Random.Range(0, _colors.Count);
-        _hair.color = _colors[idx];
+        while (true)
+        {
+            var idx = Random.Range(0, _colors.Count);
+            if (_lastColorIndex == idx)
+                continue;
+            
+            _hair.color = _colors[idx];
+            _lastColorIndex = idx;
+            break;
+        }
     }
 
     public void SetPosition(Vector3 position) => 
