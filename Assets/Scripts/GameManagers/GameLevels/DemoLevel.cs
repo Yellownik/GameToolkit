@@ -38,6 +38,18 @@ namespace GameManagers
         private void Start()
         {
             Button.AddFunction(OnClick);
+            _player.ObDragEnded += OnPlayerDragEnded;
+        }
+
+        private void OnPlayerDragEnded(bool isCollidedWithChair)
+        {
+            if (isCollidedWithChair)
+            {
+                _player.SetPosition(SitPoint.position);
+                _player.SetDraggingActive(false);
+            }
+            else
+                _player.SetPosition(PlayerSpawnPoint.position);
         }
 
         public IPromise StartLevel()
@@ -55,6 +67,7 @@ namespace GameManagers
             _counter.Init(InitialMoney);
             Money.gameObject.SetActive(false);
             
+            _player.SetDraggingActive(false);
             _player.gameObject.SetActive(false);
             SpawnPlayer(1);
         }

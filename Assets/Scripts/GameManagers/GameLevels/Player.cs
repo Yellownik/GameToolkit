@@ -1,18 +1,29 @@
+using System;
 using System.Collections.Generic;
 using Orbox.Async;
 using UIWrappers;
 using UnityEngine;
 using Utils;
+using Random = UnityEngine.Random;
 
 public class Player : BaseUIWrapper
 {
+    [SerializeField] private Draggable _draggable;
     [SerializeField] private SpriteRenderer _body;
     [SerializeField] private SpriteRenderer _hair;
     [Space]
     [SerializeField] private List<Color> _colors = new();
     
+    public event Action<bool> ObDragEnded;
+
+    private void Start()
+    {
+        _draggable.OnDragEnded += (b) => ObDragEnded.Invoke(b);
+    }
+
     public override IPromise Show()
     {
+        SetDraggingActive(true);
         _hair.SetAlpha(0);
         
         var promise = BaseScale(true);
@@ -24,6 +35,8 @@ public class Player : BaseUIWrapper
 
     public override IPromise Hide()
     {
+        SetDraggingActive(false);
+        
         _hair.DoFade(false);
 
         var promise = BaseScale(false);
@@ -41,4 +54,7 @@ public class Player : BaseUIWrapper
 
     public void SetPosition(Vector3 position) => 
         transform.position = position;
+
+    public void SetDraggingActive(bool isActive) => 
+        _draggable.SetDraggingActive(isActive);
 }
