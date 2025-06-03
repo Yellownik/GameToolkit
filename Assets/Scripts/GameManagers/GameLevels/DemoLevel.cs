@@ -9,9 +9,16 @@ namespace GameManagers
 {
     public class DemoLevel : MonoBehaviour
     {
+        private enum State
+        {
+            WaitingForPlayer,
+            StylingStarted,
+        }
+        
         [SerializeField] private ButtonListener Button;
         [SerializeField] private Counter _counter;
         [SerializeField] private Player _player;
+        [SerializeField] private StyleProgress _styleProgress;
         
         [Space]
         [SerializeField] private int CustomersToEnd = 10;
@@ -35,9 +42,12 @@ namespace GameManagers
 
         private Promise EndLevelPromise = new Promise();
         
+        private State _state = State.WaitingForPlayer;
+        private int _colorChanges = 0;
+        
         private void Start()
         {
-            Button.AddFunction(OnClick);
+            Button.AddFunction(OnButtonClick);
             _player.ObDragEnded += OnPlayerDragEnded;
         }
 
@@ -46,10 +56,12 @@ namespace GameManagers
             if (isCollidedWithChair)
             {
                 _player.SetPosition(SitPoint.position);
-                _player.SetDraggingActive(false);
+                StartStyling();
             }
             else
+            {
                 _player.SetPosition(PlayerSpawnPoint.position);
+            }
         }
 
         public IPromise StartLevel()
@@ -64,6 +76,10 @@ namespace GameManagers
 
         private void Init()
         {
+            _state = State.WaitingForPlayer;
+            Button.gameObject.SetActive(false);
+            _styleProgress.Init();
+            
             _counter.Init(InitialMoney);
             Money.gameObject.SetActive(false);
             
@@ -78,23 +94,56 @@ namespace GameManagers
             TimerService.Wait(delay.Value)
                 .Done(() => 
                 {
-                    _player.gameObject.SetActive(true);
                     _player.SetPosition(PlayerSpawnPoint.position);
-                    _player.Show();
+                    _player.gameObject.SetActive(true);
+                    _player.Show()
+                        .Done(() => _player.SetDraggingActive(true));
                 });
         }
         
-        private void OnClick()
+        private void StartStyling()
         {
+            _state = State.StylingStarted;
+            _colorChanges = 0;
+            
+            _player.SetDraggingActive(false);
+            Button.gameObject.SetActive(true);
+
+            _styleProgress.WaitForEnd()
+                .Done(EndStyling);
+        }
+        
+        private void EndStyling()
+        {
+            _state = State.WaitingForPlayer;
+            Button.gameObject.SetActive(false);
+            
             if (CustomersToEnd <= 0)
             {
                 EndLevel();
+                return;
             }
-            else
-            {
+
+            CustomersToEnd--;
+            
+            if (_colorChanges > 0)
                 Pay();
-                CustomersToEnd--;
-            }
+            
+            _player.Hide()
+                .Done(() => SpawnPlayer());
+        }
+        
+        private void OnButtonClick()
+        {
+            if (_state is not State.StylingStarted)
+                return;
+            
+            if (_counter.CanSpend(PriceForColoring))
+            {
+                _counter.SpendValue(PriceForColoring);
+                _player.ChangeHairColor();
+                _colorChanges++;
+            };
         }
 
         private void EndLevel()
@@ -116,9 +165,6 @@ namespace GameManagers
             Money.Show()
                 .Then(Money.Hide)
                 .Done(() => Money.gameObject.SetActive(false));
-
-            _player.Hide()
-                .Done(() => SpawnPlayer());
         }
     }
 }

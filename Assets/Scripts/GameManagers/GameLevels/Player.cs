@@ -23,7 +23,6 @@ public class Player : BaseUIWrapper
 
     public override IPromise Show()
     {
-        SetDraggingActive(true);
         _hair.SetAlpha(0);
         
         var promise = BaseScale(true);
@@ -35,8 +34,6 @@ public class Player : BaseUIWrapper
 
     public override IPromise Hide()
     {
-        SetDraggingActive(false);
-        
         _hair.DoFade(false);
 
         var promise = BaseScale(false);
