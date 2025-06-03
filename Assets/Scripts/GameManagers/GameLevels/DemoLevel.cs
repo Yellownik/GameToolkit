@@ -18,6 +18,7 @@ namespace GameManagers
         [SerializeField] private int InitialMoney = 5;
         [SerializeField] private int PriceForColoring = 1;
         [SerializeField] private int PaymentAmount = 10;
+        [SerializeField] private Vector2 SpawnPlayerDelay = new Vector2(2, 5);
         
         [Space]
         [SerializeField] private Transform PlayerSpawnPoint;
@@ -55,15 +56,19 @@ namespace GameManagers
             Money.gameObject.SetActive(false);
             
             _player.gameObject.SetActive(false);
-            TimerService.Wait(1)
-                .Done(SpawnPlayer);
+            SpawnPlayer(1);
         }
         
-        private void SpawnPlayer()
+        private void SpawnPlayer(float? delay = null)
         {
-            _player.gameObject.SetActive(true);
-            _player.SetPosition(PlayerSpawnPoint.position);
-            _player.Show();
+            delay ??= Random.Range(SpawnPlayerDelay.x, SpawnPlayerDelay.y);
+            TimerService.Wait(delay.Value)
+                .Done(() => 
+                {
+                    _player.gameObject.SetActive(true);
+                    _player.SetPosition(PlayerSpawnPoint.position);
+                    _player.Show();
+                });
         }
         
         private void OnClick()
@@ -74,7 +79,7 @@ namespace GameManagers
             }
             else
             {
-                SpawnFlyText();
+                Pay();
                 CustomersToEnd--;
             }
         }
@@ -88,7 +93,7 @@ namespace GameManagers
                 .Done(() => EndLevelPromise.Resolve());
         }
 
-        private void SpawnFlyText()
+        private void Pay()
         {
             var offset = Random.insideUnitSphere * MoneySpawnRange;
             Money.transform.position = MoneySpawnPoint.position + offset;
@@ -98,6 +103,9 @@ namespace GameManagers
             Money.Show()
                 .Then(Money.Hide)
                 .Done(() => Money.gameObject.SetActive(false));
+
+            _player.Hide()
+                .Done(() => SpawnPlayer());
         }
     }
 }
