@@ -38,13 +38,13 @@ public class Draggable : MonoBehaviour, IPointerUpHandler, IPointerDownHandler, 
         OnDragEnded.Invoke(_isCollidedWithChair);
     }
 
-    private void OnCollisionEnter2D(Collision2D other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.CompareTag(TargetTag)) 
             _isCollidedWithChair = true;
     }
 
-    private void OnCollisionExit2D(Collision2D other)
+    private void OnTriggerExit2D(Collider2D other)
     {
         if (other.gameObject.CompareTag(TargetTag)) 
             _isCollidedWithChair = false;

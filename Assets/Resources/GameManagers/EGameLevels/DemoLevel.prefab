@@ -95,6 +95,7 @@ GameObject:
   - component: {fileID: 4655460926733521231}
   - component: {fileID: 3923938087798879144}
   - component: {fileID: 5669757006975959640}
+  - component: {fileID: 7958564371189114644}
   m_Layer: 0
   m_Name: Chair
   m_TagString: Chair
@@ -258,6 +259,33 @@ PolygonCollider2D:
       - {x: -0.875, y: 0.099999994}
       - {x: -0.865, y: 0.11}
   m_UseDelaunayMesh: 0
+--- !u!50 &7958564371189114644
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 208559313044743172}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &1413989885134775121
 GameObject:
   m_ObjectHideFlags: 0
@@ -674,8 +702,8 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 6882889656569760007}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.3, y: 0.3}
-  m_AnchorMax: {x: 0.7, y: 0.7}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -718,7 +746,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.23529412}
+  m_Color: {r: 0.0058795214, g: 1, b: 0, a: 0.23529412}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -888,7 +916,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6882889656569760008}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
   m_Name: 
@@ -1154,6 +1182,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6882889656569760007}
     m_Modifications:
+    - target: {fileID: 2334483782221797317, guid: e2eaafc1e51710d47b200028a5e154a6,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3583065640982558147, guid: e2eaafc1e51710d47b200028a5e154a6,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6386130911084644681, guid: e2eaafc1e51710d47b200028a5e154a6,
         type: 3}
       propertyPath: m_Pivot.x
