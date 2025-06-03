@@ -818,7 +818,7 @@ MonoBehaviour:
   InitialMoney: 5
   PriceForColoring: 1
   PaymentAmount: 10
-  SpawnPlayerDelay: {x: 2, y: 5}
+  SpawnPlayerDelay: {x: 1.5, y: 3}
   PlayerSpawnPoint: {fileID: 3814986992333180764}
   SitPoint: {fileID: 1770540640322924213}
   MoneySpawnPoint: {fileID: 4303976513636308827}

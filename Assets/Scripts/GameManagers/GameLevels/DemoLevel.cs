@@ -143,6 +143,8 @@ namespace GameManagers
                 _counter.SpendValue(PriceForColoring);
                 _player.ChangeHairColor();
                 _colorChanges++;
+                
+                AudioManager.PlaySound(ESounds.Click);
             };
         }
 
@@ -165,6 +167,8 @@ namespace GameManagers
             Money.Show()
                 .Then(Money.Hide)
                 .Done(() => Money.gameObject.SetActive(false));
+            
+            AudioManager.PlaySound(ESounds.Money);
         }
     }
 }
