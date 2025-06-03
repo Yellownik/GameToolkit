@@ -9,11 +9,11 @@ namespace UIWrappers
         public abstract IPromise Show();
         public abstract IPromise Hide();
 
-        protected IPromise BaseScale(bool isShow)
+        protected IPromise BaseScale(bool isShow, float duration = -1)
         {
             var promise = new Promise();
 
-            transform.DoScale(isShow)
+            transform.DoScale(isShow, duration)
                 .onComplete += () => promise.Resolve();
 
             return promise;

@@ -129,7 +129,8 @@ namespace GameManagers
             if (_colorChanges > 0)
                 Pay();
             
-            _player.Hide()
+            TimerService.Wait(1)
+                .Then(() => _player.Hide())
                 .Done(() => SpawnPlayer());
         }
         

@@ -36,11 +36,11 @@ public class Player : BaseUIWrapper
 
     public override IPromise Hide()
     {
-        _hair.DoFade(false);
+        _hair.DoFade(false, 1f);
 
-        var promise = BaseScale(false);
-        transform.DoMove(false, offset: Vector3.left);
-        _body.DoFade(false);
+        var promise = BaseScale(false, 1f);
+        transform.DoMove(false, 1f, offset: Vector3.left);
+        _body.DoFade(false, 1f);
 
         return promise;
     }
