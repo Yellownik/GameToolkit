@@ -45,6 +45,8 @@ namespace GameManagers
 
         private void StartTheGame()
         {
+            AudioManager.StopMusic();
+            AudioManager.PlayMusic(EMusic.Game_Main);
             DemoLevel.StartLevel()
                 .Done(ShowTitres);
         }
