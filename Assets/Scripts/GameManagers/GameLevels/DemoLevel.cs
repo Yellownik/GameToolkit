@@ -1,9 +1,8 @@
 ﻿using AudioSources;
 using ButtonListeners;
 using Core;
-using FlyTexts;
 using Orbox.Async;
-using UI.Menus;
+using UIWrappers;
 using UnityEngine;
 
 namespace GameManagers
@@ -11,14 +10,27 @@ namespace GameManagers
     public class DemoLevel : MonoBehaviour
     {
         [SerializeField] private ButtonListener Button;
+        [SerializeField] private Counter _counter;
+        [SerializeField] private Player _player;
         
-        [SerializeField] private int ClicksToEnd = 10;
-        [SerializeField] private float RandomRange = 100;
-        [SerializeField] private bool IsUniqueFlyText = true;
-
+        [Space]
+        [SerializeField] private int CustomersToEnd = 10;
+        [SerializeField] private int InitialMoney = 5;
+        [SerializeField] private int PriceForColoring = 1;
+        [SerializeField] private int PaymentAmount = 10;
+        
+        [Space]
+        [SerializeField] private Transform PlayerSpawnPoint;
+        [SerializeField] private Transform SitPoint;
+        
+        [Header("Money")]
+        [SerializeField] private Transform MoneySpawnPoint;
+        [SerializeField] private float MoneySpawnRange = 0.5f;
+        [SerializeField] private SpriteRendererWrapper Money;
+        
         private FadeManager FadeManager => Root.FadeManager;
         private AudioManager AudioManager => Root.AudioManager;
-        private FlyTextManager FlyTextManager => Root.FlyTextManager;
+        private ITimerService TimerService => Root.TimerService;
 
         private Promise EndLevelPromise = new Promise();
         
@@ -31,20 +43,39 @@ namespace GameManagers
         {
             gameObject.SetActive(true);
             FadeManager.FadeIn();
-
+            
+            Init();
+            
             return EndLevelPromise;
         }
 
+        private void Init()
+        {
+            _counter.Init(InitialMoney);
+            Money.gameObject.SetActive(false);
+            
+            _player.gameObject.SetActive(false);
+            TimerService.Wait(1)
+                .Done(SpawnPlayer);
+        }
+        
+        private void SpawnPlayer()
+        {
+            _player.gameObject.SetActive(true);
+            _player.SetPosition(PlayerSpawnPoint.position);
+            _player.Show();
+        }
+        
         private void OnClick()
         {
-            if (ClicksToEnd <= 0)
+            if (CustomersToEnd <= 0)
             {
                 EndLevel();
             }
             else
             {
                 SpawnFlyText();
-                ClicksToEnd--;
+                CustomersToEnd--;
             }
         }
 
@@ -59,10 +90,14 @@ namespace GameManagers
 
         private void SpawnFlyText()
         {
-            var offset = Random.onUnitSphere * RandomRange;
-            offset.z = Button.transform.position.z;
+            var offset = Random.insideUnitSphere * MoneySpawnRange;
+            Money.transform.position = MoneySpawnPoint.position + offset;
 
-            FlyTextManager.Spawn(Button.GetComponent<RectTransform>(), ClicksToEnd.ToString(), offset, isUnique: IsUniqueFlyText);
+            _counter.AddValue(PaymentAmount);
+            Money.gameObject.SetActive(true);
+            Money.Show()
+                .Then(Money.Hide)
+                .Done(() => Money.gameObject.SetActive(false));
         }
     }
 }
