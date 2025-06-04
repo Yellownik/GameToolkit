@@ -120,6 +120,7 @@ namespace UI.Menus
 		public void ShowTitresMenu()
 		{
 			TitresMenu.Show();
+			TitresMenu.ShowCounter();
 		}
 
 		private void Exit()

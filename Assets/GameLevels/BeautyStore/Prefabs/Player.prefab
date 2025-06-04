@@ -61,6 +61,12 @@ MonoBehaviour:
   - {r: 1, g: 1, b: 1, a: 0.4}
   - {r: 0.9490196, g: 0.5294118, b: 0, a: 0.69803923}
   - {r: 1, g: 1, b: 1, a: 0.8}
+  _bodies:
+  - {fileID: 21300000, guid: 561a49f56f9485c4cbb5f0644d8978e5, type: 3}
+  - {fileID: 21300000, guid: 01e638c239028f04da4cb284e352573b, type: 3}
+  - {fileID: 21300000, guid: 9240e8455f75d1a458b287d2c0e50a57, type: 3}
+  - {fileID: 21300000, guid: 8defc9825f8152d4ea6580e18a9f580d, type: 3}
+  - {fileID: 21300000, guid: 64cdad8eb2ce3e342ab5b41be5580a4b, type: 3}
 --- !u!114 &4896260641947196403
 MonoBehaviour:
   m_ObjectHideFlags: 0

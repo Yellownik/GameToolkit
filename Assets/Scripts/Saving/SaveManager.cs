@@ -1,5 +1,6 @@
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using GameManagers;
 using UnityEngine;
 
 namespace Saving
@@ -12,12 +13,18 @@ namespace Saving
 		public bool HasSavedData => File.Exists(SavePath);
 
 		public SettingsData SettingsData => CachedData.SettingsData;
+		public BeautySaveData BeautySaveData => CachedData.BeautySaveData;
 
 		public void SetVolume(float volume)
 		{
 			CachedData.SettingsData.Volume = volume;
 		}
 
+		public void SetCoinsCount(int value)
+		{
+			CachedData.BeautySaveData.CoinsCount = value;
+		}
+		
 		public void OverrideSaveData(SaveData saveData)
 		{
 			CachedData = saveData;
