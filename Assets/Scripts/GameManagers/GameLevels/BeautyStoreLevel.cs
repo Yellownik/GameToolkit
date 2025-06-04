@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace GameManagers
 {
-    public class BeautyStoreLevel : MonoBehaviour
+    public class BeautyStoreLevel : BaseLevel
     {
         private enum State
         {
@@ -25,7 +25,7 @@ namespace GameManagers
         [SerializeField] private int InitialMoney = 5;
         [SerializeField] private int PriceForColoring = 1;
         [SerializeField] private int PaymentAmount = 10;
-        [SerializeField] private Vector2 SpawnPlayerDelay = new Vector2(2, 5);
+        [SerializeField] private Vector2 SpawnPlayerDelay = new(2, 5);
         
         [Space]
         [SerializeField] private Transform PlayerSpawnPoint;
@@ -36,12 +36,8 @@ namespace GameManagers
         [SerializeField] private float MoneySpawnRange = 0.5f;
         [SerializeField] private SpriteRendererWrapper Money;
         
-        private FadeManager FadeManager => Root.FadeManager;
-        private AudioManager AudioManager => Root.AudioManager;
         private ITimerService TimerService => Root.TimerService;
 
-        private Promise EndLevelPromise = new Promise();
-        
         private State _state = State.WaitingForPlayer;
         private int _colorChanges = 0;
         
@@ -64,14 +60,14 @@ namespace GameManagers
             }
         }
 
-        public IPromise StartLevel()
+        public override IPromise StartLevel()
         {
-            gameObject.SetActive(true);
-            FadeManager.FadeIn();
+            AudioManager.StopMusic();
+            AudioManager.PlayMusic(EMusic.Game_Main);
             
             Init();
             
-            return EndLevelPromise;
+            return base.StartLevel();
         }
 
         private void Init()
@@ -138,24 +134,15 @@ namespace GameManagers
         {
             if (_state is not State.StylingStarted)
                 return;
+
+            if (!_counter.CanSpend(PriceForColoring))
+                return;
             
-            if (_counter.CanSpend(PriceForColoring))
-            {
-                _counter.SpendValue(PriceForColoring);
-                _player.ChangeHairColor();
-                _colorChanges++;
+            _counter.SpendValue(PriceForColoring);
+            _player.ChangeHairColor();
+            _colorChanges++;
                 
-                AudioManager.PlaySound(ESounds.Click);
-            };
-        }
-
-        private void EndLevel()
-        {
-            AudioManager.StopMusic(fadeTime: 1);
-
-            FadeManager.ResetFadeCenter();
-            FadeManager.FadeOut(duration: 1)
-                .Done(() => EndLevelPromise.Resolve());
+            AudioManager.PlaySound(ESounds.Click);
         }
 
         private void Pay()

@@ -8,58 +8,58 @@ namespace GameManagers
 {
     public class GameManager
     {
-        private readonly FadeManager FadeManager;
-        private readonly AudioManager AudioManager;
-        private readonly MenuManager MenuManager;
+        private readonly FadeManager _fadeManager;
+        private readonly AudioManager _audioManager;
+        private readonly MenuManager _menuManager;
 
-        private BeautyStoreLevel _beautyStoreLevel;
+        private BaseLevel _gameLevel;
 
         public GameManager(FadeManager fadeManager, AudioManager audioManager, MenuManager menuManager, IResourceManager resourceManager)
         {
-            FadeManager = fadeManager;
-            AudioManager = audioManager;
-            MenuManager = menuManager;
+            _fadeManager = fadeManager;
+            _audioManager = audioManager;
+            _menuManager = menuManager;
 
             InitLevels(resourceManager);
         }
 
         private void InitLevels(IResourceManager resourceManager)
         {
+            var eGameLevels = EGameLevels.DemoLevel;
+            
             var levelsRoot = new GameObject("GameLevels").transform;
-            _beautyStoreLevel = resourceManager.CreatePrefabInstance<EGameLevels, BeautyStoreLevel>(EGameLevels.BeautyStoreLevel, levelsRoot);
-            _beautyStoreLevel.gameObject.SetActive(false);
+            _gameLevel = resourceManager.CreatePrefabInstance<EGameLevels, BaseLevel>(eGameLevels, levelsRoot);
+            _gameLevel.gameObject.SetActive(false);
         }
 
         public void Run()
         {
-            FadeManager.SetFade(true);
-            FadeManager.FadeIn(0.5f);
-            AudioManager.PlayMusic(EMusic.Menu_Main, 0.5f);
+            _fadeManager.SetFade(true);
+            _fadeManager.FadeIn(0.5f);
+            _audioManager.PlayMusic(EMusic.Menu_Main, 0.5f);
 
-            MenuManager.ShowMainMenu();
-            MenuManager.WaitForPlay()
+            _menuManager.ShowMainMenu();
+            _menuManager.WaitForPlay()
                 .Done(StartTheGame);
-            MenuManager.WaitForExit()
+            _menuManager.WaitForExit()
                 .Done(ExitTheGame);
         }
 
         private void StartTheGame()
         {
-            AudioManager.StopMusic();
-            AudioManager.PlayMusic(EMusic.Game_Main);
-            _beautyStoreLevel.StartLevel()
+            _gameLevel.StartLevel()
                 .Done(ShowTitres);
         }
 
         private void ShowTitres()
         {
-            AudioManager.PlayMusic(EMusic.Titres, fadeTime: 1);
-            MenuManager.ShowTitresMenu();
-            AudioManager.StopMusic(delay: 5, fadeTime: 2);
+            _audioManager.PlayMusic(EMusic.Titres, fadeTime: 1);
+            _menuManager.ShowTitresMenu();
+            _audioManager.StopMusic(delay: 5, fadeTime: 2);
 
-            FadeManager.FadeIn(duration: 2)
-                .Then(() => FadeManager.FadeOut(delay: 3, duration: 2))
-                .Done(() => ExitTheGame());
+            _fadeManager.FadeIn(duration: 2)
+                .Then(() => _fadeManager.FadeOut(delay: 3, duration: 2))
+                .Done(ExitTheGame);
         }
         
         private void ExitTheGame()
