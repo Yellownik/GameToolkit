@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace GameManagers
 {
-    public class DemoLevel : MonoBehaviour
+    public class BeautyStoreLevel : MonoBehaviour
     {
         private enum State
         {

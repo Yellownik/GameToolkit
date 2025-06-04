@@ -12,7 +12,7 @@ namespace GameManagers
         private readonly AudioManager AudioManager;
         private readonly MenuManager MenuManager;
 
-        private DemoLevel DemoLevel;
+        private BeautyStoreLevel _beautyStoreLevel;
 
         public GameManager(FadeManager fadeManager, AudioManager audioManager, MenuManager menuManager, IResourceManager resourceManager)
         {
@@ -26,8 +26,8 @@ namespace GameManagers
         private void InitLevels(IResourceManager resourceManager)
         {
             var levelsRoot = new GameObject("GameLevels").transform;
-            DemoLevel = resourceManager.CreatePrefabInstance<EGameLevels, DemoLevel>(EGameLevels.DemoLevel, levelsRoot);
-            DemoLevel.gameObject.SetActive(false);
+            _beautyStoreLevel = resourceManager.CreatePrefabInstance<EGameLevels, BeautyStoreLevel>(EGameLevels.BeautyStoreLevel, levelsRoot);
+            _beautyStoreLevel.gameObject.SetActive(false);
         }
 
         public void Run()
@@ -47,7 +47,7 @@ namespace GameManagers
         {
             AudioManager.StopMusic();
             AudioManager.PlayMusic(EMusic.Game_Main);
-            DemoLevel.StartLevel()
+            _beautyStoreLevel.StartLevel()
                 .Done(ShowTitres);
         }
 

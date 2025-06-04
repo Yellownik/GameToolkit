@@ -3,5 +3,6 @@
     public enum EGameLevels
     {
         DemoLevel,
+        BeautyStoreLevel,
     }
 }

@@ -774,7 +774,7 @@ GameObject:
   - component: {fileID: 6882889655552550104}
   - component: {fileID: 6882889655552550105}
   m_Layer: 0
-  m_Name: DemoLevel
+  m_Name: BeautyStoreLevel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
