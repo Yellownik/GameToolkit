@@ -8,46 +8,64 @@ namespace GameManagers
 {
     public class GameManager
     {
-        private readonly FadeManager FadeManager;
-        private readonly AudioManager AudioManager;
-        private readonly MenuManager MenuManager;
+        private readonly FadeManager _fadeManager;
+        private readonly AudioManager _audioManager;
+        private readonly MenuManager _menuManager;
+        private readonly IResourceManager _resourceManager;
 
-        private DemoLevel DemoLevel;
+        private EGameLevels _levelType;
+        private BaseLevel _gameLevel;
 
         public GameManager(FadeManager fadeManager, AudioManager audioManager, MenuManager menuManager, IResourceManager resourceManager)
         {
-            FadeManager = fadeManager;
-            AudioManager = audioManager;
-            MenuManager = menuManager;
-
-            InitLevels(resourceManager);
+            _fadeManager = fadeManager;
+            _audioManager = audioManager;
+            _menuManager = menuManager;
+            _resourceManager = resourceManager;
         }
 
-        private void InitLevels(IResourceManager resourceManager)
+        public void Run(EGameLevels gameLevel)
         {
-            var levelsRoot = new GameObject("GameLevels").transform;
-            DemoLevel = resourceManager.CreatePrefabInstance<EGameLevels, DemoLevel>(EGameLevels.DemoLevel, levelsRoot);
-            DemoLevel.gameObject.SetActive(false);
-        }
+            _levelType = gameLevel;
+            
+            _fadeManager.SetFade(true);
+            _fadeManager.FadeIn(0.5f);
+            _audioManager.PlayMusic(EMusic.Menu_Main, 0.5f);
 
-        public void Run()
-        {
-            FadeManager.SetFade(true);
-            FadeManager.FadeIn(0.5f);
-            AudioManager.PlayMusic(EMusic.Menu_Main, 0.5f);
-
-            MenuManager.ShowMainMenu();
-            MenuManager.WaitForPlay()
+            _menuManager.ShowMainMenu();
+            _menuManager.WaitForPlay()
                 .Done(StartTheGame);
+            _menuManager.WaitForExit()
+                .Done(ExitTheGame);
         }
 
         private void StartTheGame()
         {
-            Debug.Log("Game started");
-            DemoLevel.StartLevel();
+            CreateLevel(_levelType);
+
+            _gameLevel.StartLevel()
+                .Done(ShowTitres);
         }
 
-        public void ExitTheGame()
+        private void CreateLevel(EGameLevels levelType)
+        {
+            var levelsRoot = new GameObject("GameLevels").transform;
+            _gameLevel = _resourceManager.CreatePrefabInstance<EGameLevels, BaseLevel>(levelType, levelsRoot);
+            _gameLevel.gameObject.SetActive(false);
+        }
+        
+        private void ShowTitres()
+        {
+            _audioManager.PlayMusic(EMusic.Titres, fadeTime: 1);
+            _menuManager.ShowTitresMenu();
+            _audioManager.StopMusic(delay: 5, fadeTime: 2);
+
+            _fadeManager.FadeIn(duration: 2)
+                .Then(() => _fadeManager.FadeOut(delay: 3, duration: 2))
+                .Done(ExitTheGame);
+        }
+        
+        private void ExitTheGame()
         {
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;

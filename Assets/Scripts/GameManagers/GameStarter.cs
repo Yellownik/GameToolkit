@@ -5,10 +5,11 @@ namespace GameManagers
 {
     public class GameStarter : MonoBehaviour
     {
-        void Start()
+        [SerializeField] private EGameLevels _gameLevel = EGameLevels.DemoLevel;
+        
+        private void Start()
         {
-            Root.TimerService.Wait(0.01f)
-                .Done(() => Root.GameManager.Run());
+            Root.GameManager.Run(_gameLevel);
         }
     }
 }

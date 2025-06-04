@@ -1,11 +1,8 @@
 ﻿using AudioSources;
 using FlyTexts;
 using GameManagers;
-using Orbox.Async;
 using Orbox.Utils;
 using Saving;
-using System.Collections;
-using System.Collections.Generic;
 using UI;
 using UI.Menus;
 using UnityEngine;
@@ -42,18 +39,17 @@ namespace Core
 
 		private void Init()
 		{
-			var gameManagerPromise = new Promise<GameManager>();
-
 			ResourceManager = new ResourceManager();
 			UIRoot = ResourceManager.CreatePrefabInstance<EComponents, UIRoot>(EComponents.UIRoot, RootTransform);
 			ViewFactory = new ViewFactory(ResourceManager, UIRoot);
-			FlyTextManager = new FlyTextManager(ResourceManager);
+			
+			CameraManager = MonoExtensions.MakeComponent<CameraManager>(RootTransform);
+			FlyTextManager = new FlyTextManager(ResourceManager, CameraManager);
 
 			TimerService = MonoExtensions.MakeComponent<TimerService>(RootTransform);
 			InputManager = new InputManager(TimerService);
 
 			AudioManager = CreateAudioManager(ResourceManager, TimerService);
-			CameraManager = MonoExtensions.MakeComponent<CameraManager>(RootTransform);
 
 			FadeManager = ResourceManager.CreatePrefabInstance<EComponents, FadeManager>(EComponents.FadeManager, RootTransform);
 			FadeManager.Init(CameraManager, InputManager, UIRoot);
@@ -61,11 +57,8 @@ namespace Core
 			SaveManager = new SaveManager();
 			SaveManager.RestoreData();
 
-			MenuManager = new MenuManager(ViewFactory, InputManager, FadeManager, SaveManager, AudioManager, gameManagerPromise);
-
-
-			GameManager = CreateGameManager(FadeManager, AudioManager, MenuManager, ResourceManager);
-			gameManagerPromise.Resolve(GameManager);
+			MenuManager = new MenuManager(ViewFactory, InputManager, FadeManager, SaveManager, AudioManager);
+			GameManager = new GameManager(FadeManager, AudioManager, MenuManager, ResourceManager);
 		}
 
 		private static AudioManager CreateAudioManager(IResourceManager resourceManager, ITimerService timerService)
@@ -76,13 +69,8 @@ namespace Core
 
 			var audioManager = ResourceManager.CreatePrefabInstance<EComponents, AudioManager>(EComponents.AudioManager, RootTransform);
 			audioManager.Init(soundManager, timerService);
+			
 			return audioManager;
-		}
-
-		private static GameManager CreateGameManager(FadeManager fadeManager, AudioManager audioManager, MenuManager menuManager, IResourceManager resourceManager)
-		{
-			var gameManager = new GameManager(fadeManager, audioManager, menuManager, resourceManager);
-			return gameManager;
 		}
 	}
 }
