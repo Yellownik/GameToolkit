@@ -13,8 +13,10 @@ public class Player : BaseUIWrapper
     [SerializeField] private SpriteRenderer _hair;
     [Space]
     [SerializeField] private List<Color> _colors = new();
+    [SerializeField] private List<Sprite> _bodies = new();
     
     private int _lastColorIndex = -1;
+    private int _lastBodyIndex = -1;
     
     public event Action<bool> ObDragEnded;
 
@@ -31,9 +33,24 @@ public class Player : BaseUIWrapper
         transform.DoMove(true, offset: Vector3.right);
         _body.DoFade(true);
 
+        ChangeBodySprite();
         return promise;
     }
 
+    public void ChangeBodySprite()
+    {
+        while (true)
+        {
+            var idx = Random.Range(0, _bodies.Count);
+            if (_lastBodyIndex == idx)
+                continue;
+            
+            _body.sprite = _bodies[idx];
+            _lastBodyIndex = idx;
+            break;
+        }
+    }
+    
     public override IPromise Hide()
     {
         _hair.DoFade(false, 1f);
