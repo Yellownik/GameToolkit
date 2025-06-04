@@ -25,7 +25,7 @@ namespace Core
 		{
 			if (Input.GetKeyDown(KeyCode.Escape))
 			{
-				//GamePausing();
+				GamePausing();
 			}
 		}
 	}
