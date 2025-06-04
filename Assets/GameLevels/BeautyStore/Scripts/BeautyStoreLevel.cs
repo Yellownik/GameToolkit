@@ -116,6 +116,7 @@ namespace GameManagers
             
             if (CustomersToEnd <= 0)
             {
+                Root.SaveManager.SetCoinsCount(_counter.CurrentValue);
                 EndLevel();
                 return;
             }

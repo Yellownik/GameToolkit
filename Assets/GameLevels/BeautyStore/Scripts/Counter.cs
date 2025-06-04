@@ -5,29 +5,23 @@ public class Counter : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _counter;
 
-    private int _currentValue = 0;
-    
-    public void Init(int initialValue)
-    {
+    public int CurrentValue { get; private set; }
+
+    public void Init(int initialValue) => 
         SetValue(initialValue);
-    }
 
-    public void AddValue(int value)
-    {
-        SetValue(_currentValue + value);
-    }
-    
+    public void AddValue(int value) => 
+        SetValue(CurrentValue + value);
+
     public bool CanSpend(int value) => 
-        _currentValue >= value;
+        CurrentValue >= value;
 
-    public void SpendValue(int value)
-    {
-        SetValue(_currentValue - value);
-    }
-    
+    public void SpendValue(int value) => 
+        SetValue(CurrentValue - value);
+
     private void SetValue(int value)
     {
-        _currentValue = value;
+        CurrentValue = value;
         _counter.text = value.ToString();
     }
 }
