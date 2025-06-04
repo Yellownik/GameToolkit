@@ -11,7 +11,9 @@ namespace GameManagers
         private readonly FadeManager _fadeManager;
         private readonly AudioManager _audioManager;
         private readonly MenuManager _menuManager;
+        private readonly IResourceManager _resourceManager;
 
+        private EGameLevels _levelType;
         private BaseLevel _gameLevel;
 
         public GameManager(FadeManager fadeManager, AudioManager audioManager, MenuManager menuManager, IResourceManager resourceManager)
@@ -19,21 +21,13 @@ namespace GameManagers
             _fadeManager = fadeManager;
             _audioManager = audioManager;
             _menuManager = menuManager;
-
-            InitLevels(resourceManager);
+            _resourceManager = resourceManager;
         }
 
-        private void InitLevels(IResourceManager resourceManager)
+        public void Run(EGameLevels gameLevel)
         {
-            var eGameLevels = EGameLevels.DemoLevel;
+            _levelType = gameLevel;
             
-            var levelsRoot = new GameObject("GameLevels").transform;
-            _gameLevel = resourceManager.CreatePrefabInstance<EGameLevels, BaseLevel>(eGameLevels, levelsRoot);
-            _gameLevel.gameObject.SetActive(false);
-        }
-
-        public void Run()
-        {
             _fadeManager.SetFade(true);
             _fadeManager.FadeIn(0.5f);
             _audioManager.PlayMusic(EMusic.Menu_Main, 0.5f);
@@ -47,10 +41,19 @@ namespace GameManagers
 
         private void StartTheGame()
         {
+            CreateLevel(_levelType);
+
             _gameLevel.StartLevel()
                 .Done(ShowTitres);
         }
 
+        private void CreateLevel(EGameLevels levelType)
+        {
+            var levelsRoot = new GameObject("GameLevels").transform;
+            _gameLevel = _resourceManager.CreatePrefabInstance<EGameLevels, BaseLevel>(levelType, levelsRoot);
+            _gameLevel.gameObject.SetActive(false);
+        }
+        
         private void ShowTitres()
         {
             _audioManager.PlayMusic(EMusic.Titres, fadeTime: 1);
